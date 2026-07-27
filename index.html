@@ -207,6 +207,50 @@ blockquote{margin:16px 0;padding:12px 16px;border-left:4px solid var(--gold);bor
 .docnote{font-family:var(--sans);font-size:12px;color:var(--muted);background:var(--card);
   border:1px solid var(--line);border-left:3px solid var(--navy2);border-radius:10px;padding:10px 14px;margin-bottom:18px}
 
+/* ---------- devis ---------- */
+.devis{padding:28px 0 70px;max-width:940px;margin:0 auto}
+.devis-doc{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px 34px;box-shadow:var(--shadow)}
+.devis-head{display:flex;justify-content:space-between;gap:26px;flex-wrap:wrap;
+  border-bottom:2px solid var(--gold);padding-bottom:16px;margin-bottom:20px}
+.devis-head h2{font-size:26px;margin:0;letter-spacing:-.3px}
+.devis-head .sub{color:var(--muted);font-size:13px;margin:5px 0 0;max-width:48ch;line-height:1.5}
+.devis-meta{font-size:12.5px;display:grid;gap:4px;min-width:250px;align-content:start}
+.devis-meta div{display:flex;justify-content:space-between;gap:18px}
+.devis-meta span{color:var(--muted)}
+.order-highlight{background:linear-gradient(180deg,color-mix(in srgb,var(--gold) 15%,var(--card)),var(--card));
+  border:1px solid color-mix(in srgb,var(--gold) 48%,var(--line));border-radius:12px;
+  padding:12px 16px;font-size:14px;margin-bottom:20px}
+.order-highlight .gstar{color:var(--gold);font-weight:700}
+table.dv{width:100%;border-collapse:collapse;font-size:13.5px}
+table.dv th{background:var(--navy);color:#fff;text-align:left;padding:10px 12px;font-size:12px;font-weight:600}
+:root[data-theme="dark"] table.dv th{color:#0d1524}
+table.dv td{padding:12px 12px;border-top:1px solid var(--line);vertical-align:top}
+table.dv .ref{font-weight:700;color:var(--navy2);white-space:nowrap}
+table.dv .price{text-align:right;white-space:nowrap;font-weight:700;font-variant-numeric:tabular-nums}
+table.dv th:last-child{text-align:right}
+.dv .desc{color:var(--muted);font-size:12px;margin-top:4px;line-height:1.45}
+table.dv tr.sub td{background:color-mix(in srgb,var(--navy2) 8%,transparent);font-weight:700}
+table.dv tr.opt td{color:var(--muted)}
+table.dv tr.opt td .desc{color:var(--muted)}
+.totaux{margin:20px 0 0;display:flex;justify-content:flex-end}
+.totaux .box{min-width:300px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.totaux .row{display:flex;justify-content:space-between;gap:16px;padding:10px 16px;font-size:13px}
+.totaux .row+.row{border-top:1px solid var(--line)}
+.totaux .row.grand{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;font-weight:700;font-size:15.5px}
+:root[data-theme="dark"] .totaux .row.grand{color:#0d1524}
+.totaux .muted{color:var(--muted);font-size:11.5px}
+.tva-note{text-align:right;font-size:11.5px;color:var(--muted);margin:7px 2px 0}
+.devis-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:26px}
+.devis-cols h4{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin:0 0 8px}
+.devis-cols ul{margin:0;padding-left:18px;font-size:12.5px;line-height:1.5}
+.devis-cols li{margin:5px 0}
+.remark{margin-top:26px;background:color-mix(in srgb,var(--gold) 10%,var(--card));
+  border:1px solid color-mix(in srgb,var(--gold) 40%,var(--line));border-left:4px solid var(--gold);
+  border-radius:0 12px 12px 0;padding:14px 18px;font-size:12.5px;line-height:1.55;color:var(--ink)}
+.accept{margin-top:26px;display:flex;justify-content:space-between;gap:22px;flex-wrap:wrap;
+  border-top:1px dashed var(--line);padding-top:18px;font-size:12.5px;color:var(--muted)}
+@media (max-width:640px){ .devis-doc{padding:22px 18px} .devis-cols{grid-template-columns:1fr} }
+
 footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-size:12px;text-align:center}
 
 @media (max-width:1080px){
@@ -235,6 +279,7 @@ footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-s
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" aria-selected="true" data-tab="arch">Architecture</button>
       <button class="tab" role="tab" aria-selected="false" data-tab="doc">Cahier des charges</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="devis">Devis</button>
     </div>
     <button class="themebtn" id="theme" title="Thème clair / sombre" aria-label="Basculer le thème">◐</button>
   </div>
@@ -746,6 +791,106 @@ footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-s
   </div>
 </section>
 
+<!-- ============ DEVIS ============ -->
+<section class="panel" id="p-devis">
+  <div class="wrap devis">
+    <div class="devis-doc">
+      <div class="devis-head">
+        <div>
+          <h2>Devis</h2>
+          <p class="sub">Projet ECACY — plateforme d'expertise comptable augmentée par l'IA. Développement sur mesure, hébergement en Union européenne, validation humaine à chaque étape.</p>
+        </div>
+        <div class="devis-meta">
+          <div><span>Prestataire</span><b>Agence AMRW</b></div>
+          <div><span>Client</span><b>Cabinet ECACY — Paris</b></div>
+          <div><span>Référence</span><b>DEVIS-ECACY-2026</b></div>
+          <div><span>Date</span><b>27 juillet 2026</b></div>
+          <div><span>Validité</span><b>60 jours</b></div>
+        </div>
+      </div>
+
+      <div class="order-highlight"><span class="gstar">★</span> &nbsp;Commande initiale — <b>Lot 1</b> : <b>8 500 € (HT = TTC)</b>, livrable en 3 à 4 semaines.</div>
+
+      <table class="dv">
+        <thead><tr><th>Réf.</th><th>Prestation</th><th>Prix</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="ref">L1</td>
+            <td><b>Lot 1 — Pilote « Guichet Attestations &amp; Actes »</b>
+              <div class="desc">Les 3 attestations les plus demandées (chiffre d'affaires, régularité fiscale et sociale, rémunération). Chaîne complète : demande → génération du document → validation de l'expert-comptable → signature électronique → délivrance et archivage. Réception des demandes par e-mail, WhatsApp et SMS. Livraison en 3 à 4 semaines.</div>
+            </td>
+            <td class="price">8 500 €</td>
+          </tr>
+          <tr>
+            <td class="ref">L2</td>
+            <td><b>Développement du MVP complet (« Global poussé »)</b>
+              <div class="desc">Portail client complet, ingestion omnicanale, lecture automatique des pièces, Guichet étendu à 8-10 documents, collecte &amp; relances automatiques, espace collaborateur, tableau de bord dirigeant, connexion au logiciel comptable et administration. Livraison en ~90 jours — le Lot 1 en constitue le socle.</div>
+            </td>
+            <td class="price">91 500 €</td>
+          </tr>
+          <tr class="sub">
+            <td></td>
+            <td>Programme complet — Lot 1 + MVP Global poussé</td>
+            <td class="price">100 000 €</td>
+          </tr>
+          <tr class="opt">
+            <td class="ref">O1</td>
+            <td>Maintenance, hébergement et supervision
+              <div class="desc">Correctifs, sauvegardes, mises à jour de sécurité. Les coûts de services tiers (intelligence artificielle, signature électronique) sont refacturés au coût réel.</div>
+            </td>
+            <td class="price">150 €/mois</td>
+          </tr>
+          <tr class="opt">
+            <td class="ref">O2</td>
+            <td>Évolutions ultérieures
+              <div class="desc">Assistant vocal 24/7, applications mobiles iOS / Android, version multi-cabinets, alertes proactives…</div>
+            </td>
+            <td class="price">sur devis</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="totaux">
+        <div class="box">
+          <div class="row"><span>Total HT</span><span>100 000 €</span></div>
+          <div class="row"><span class="muted">TVA</span><span class="muted">Non applicable — art. 293 B du CGI</span></div>
+          <div class="row grand"><span>Total TTC</span><span>100 000 €</span></div>
+        </div>
+      </div>
+      <p class="tva-note">Le prestataire n'est pas assujetti à la TVA : les prix HT sont égaux aux prix TTC.</p>
+
+      <div class="devis-cols">
+        <div>
+          <h4>Modalités de paiement</h4>
+          <ul>
+            <li>Lot 1 : 40 % à la commande (3 400 €), 60 % à la livraison (5 100 €)</li>
+            <li>MVP : par jalons — 30 % au lancement, 40 % en développement, 30 % à la livraison</li>
+            <li>Maintenance : mensuelle, à terme échu</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Conditions</h4>
+          <ul>
+            <li>Devis valable 60 jours à compter de sa date d'émission.</li>
+            <li>Prix fermes pour le périmètre décrit ; toute évolution fait l'objet d'un avenant.</li>
+            <li>Délais sous réserve de la fourniture des accès, données et modèles par ECACY, et d'une validation des livrables sous 48 h ouvrées.</li>
+            <li>Propriété des livrables transférée au paiement intégral.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="remark">
+        <b>Remarque.</b> Ces montants correspondent à un <b>tarif exceptionnel</b>, consenti dans le cadre d'une relation de confiance. Ils se situent <b>très en deçà des tarifs habituellement appliqués par l'Agence AMRW — y compris ses tarifs les plus bas —</b> et des prix du marché pour une prestation de cette nature. À titre indicatif, le développement d'un logiciel SaaS métier comparable se situe généralement entre <b>40 000 € et plus de 100 000 € pour le seul socle</b>, sur la base de taux journaliers de 500 à 700 € HT. Ce devis ne constitue pas un tarif de référence et ne saurait être opposé à l'Agence AMRW pour d'autres prestations ou d'autres clients.
+      </div>
+
+      <div class="accept">
+        <div>Établi à Paris, le 27 juillet 2026 — <b>Agence AMRW</b></div>
+        <div>Bon pour accord (date &amp; signature) : ______________________</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer>ECACY × Agence AMRW — Vue d'ensemble interactive du projet · 2026</footer>
 
 <script>
@@ -764,16 +909,17 @@ footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-s
 
   /* tabs */
   var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var PANELS=['arch','doc','devis'];
   function show(id,keep){
-    if(id!=='arch'&&id!=='doc') id='arch';
+    if(PANELS.indexOf(id)<0) id='arch';
     tabs.forEach(function(t){t.setAttribute('aria-selected', t.dataset.tab===id);});
-    document.getElementById('p-arch').classList.toggle('active', id==='arch');
-    document.getElementById('p-doc').classList.toggle('active', id==='doc');
+    PANELS.forEach(function(p){ document.getElementById('p-'+p).classList.toggle('active', p===id); });
     if(id==='arch'){ requestAnimationFrame(function(){requestAnimationFrame(draw);}); }
-    if(!keep){ try{history.replaceState(null,'',id==='doc'?'#doc':'#');}catch(e){} window.scrollTo(0,0); }
+    if(!keep){ try{history.replaceState(null,'',id==='arch'?'#':'#'+id);}catch(e){} window.scrollTo(0,0); }
   }
   tabs.forEach(function(t){t.addEventListener('click',function(){show(t.dataset.tab);});});
-  if((location.hash||'').indexOf('doc')>-1){ show('doc',true); }
+  var _h=(location.hash||'').replace('#','');
+  if(_h==='doc'||_h==='devis'){ show(_h,true); }
   /* optional ?theme=light|dark for deep links / verification */
   var qt=(location.search.match(/theme=(light|dark)/)||[])[1];
   if(qt){ root.setAttribute('data-theme',qt); }
