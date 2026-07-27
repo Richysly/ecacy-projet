@@ -279,7 +279,6 @@ footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-s
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" aria-selected="true" data-tab="arch">Architecture</button>
       <button class="tab" role="tab" aria-selected="false" data-tab="doc">Cahier des charges</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="devis">Devis</button>
     </div>
     <button class="themebtn" id="theme" title="Thème clair / sombre" aria-label="Basculer le thème">◐</button>
   </div>
@@ -791,101 +790,6 @@ footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-s
   </div>
 </section>
 
-<!-- ============ DEVIS ============ -->
-<section class="panel" id="p-devis">
-  <div class="wrap devis">
-    <div class="devis-doc">
-      <div class="devis-head">
-        <div>
-          <h2>Devis</h2>
-          <p class="sub">Projet ECACY — plateforme d'expertise comptable augmentée par l'IA. Développement sur mesure, hébergement en Union européenne, validation humaine à chaque étape.</p>
-        </div>
-        <div class="devis-meta">
-          <div><span>Prestataire</span><b>Agence AMRW</b></div>
-          <div><span>Client</span><b>Cabinet ECACY — Paris</b></div>
-          <div><span>Référence</span><b>DEVIS-ECACY-2026</b></div>
-          <div><span>Date</span><b>27 juillet 2026</b></div>
-          <div><span>Validité</span><b>60 jours</b></div>
-        </div>
-      </div>
-
-      <div class="order-highlight"><span class="gstar">★</span> &nbsp;Commande initiale — <b>Lot 1</b> : <b>8 500 € (HT = TTC)</b>, livrable en 3 à 4 semaines.</div>
-
-      <table class="dv">
-        <thead><tr><th>Réf.</th><th>Prestation</th><th>Prix</th></tr></thead>
-        <tbody>
-          <tr>
-            <td class="ref">L1</td>
-            <td><b>Lot 1 — Pilote « Guichet Attestations &amp; Actes »</b>
-              <div class="desc">Les 3 attestations les plus demandées (chiffre d'affaires, régularité fiscale et sociale, rémunération). Chaîne complète : demande → génération du document → validation de l'expert-comptable → signature électronique → délivrance et archivage. Réception des demandes par e-mail, WhatsApp et SMS. Livraison en 3 à 4 semaines.</div>
-            </td>
-            <td class="price">8 500 €</td>
-          </tr>
-          <tr>
-            <td class="ref">L2</td>
-            <td><b>Développement du MVP complet (« Global poussé »)</b>
-              <div class="desc">Portail client complet, ingestion omnicanale, lecture automatique des pièces, Guichet étendu à 8-10 documents, collecte &amp; relances automatiques, espace collaborateur, tableau de bord dirigeant, connexion au logiciel comptable et administration. Livraison en ~90 jours — le Lot 1 en constitue le socle. <b>Réglé en 12 mensualités, maintenance incluse.</b></div>
-            </td>
-            <td class="price">2 000 €/mois</td>
-          </tr>
-          <tr class="sub">
-            <td></td>
-            <td>Total 1re année — Lot 1 + MVP (12 mensualités)</td>
-            <td class="price">32 500 €</td>
-          </tr>
-          <tr class="opt">
-            <td class="ref">O2</td>
-            <td>Évolutions ultérieures
-              <div class="desc">Assistant vocal 24/7, applications mobiles iOS / Android, version multi-cabinets, alertes proactives…</div>
-            </td>
-            <td class="price">sur devis</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="totaux">
-        <div class="box">
-          <div class="row"><span>Lot 1 (ponctuel)</span><span>8 500 €</span></div>
-          <div class="row"><span>MVP — 12 × 2 000 €/mois (maintenance incluse)</span><span>24 000 €</span></div>
-          <div class="row"><span class="muted">TVA</span><span class="muted">Non applicable — art. 293 B du CGI</span></div>
-          <div class="row grand"><span>Total 1<sup>re</sup> année (HT = TTC)</span><span>32 500 €</span></div>
-        </div>
-      </div>
-      <p class="tva-note">Le prestataire n'est pas assujetti à la TVA : les prix HT sont égaux aux prix TTC.</p>
-
-      <div class="devis-cols">
-        <div>
-          <h4>Modalités de paiement</h4>
-          <ul>
-            <li>Lot 1 : 50 % à la commande (4 250 €), 50 % à la livraison (4 250 €)</li>
-            <li>MVP : 12 mensualités de 2 000 € (maintenance incluse), à compter du lancement du développement</li>
-            <li>Au-delà de la 1<sup>re</sup> année : maintenance sur abonnement, à convenir</li>
-          </ul>
-        </div>
-        <div>
-          <h4>Conditions</h4>
-          <ul>
-            <li>Devis valable 60 jours à compter de sa date d'émission.</li>
-            <li>Prix fermes pour le périmètre décrit ; toute évolution fait l'objet d'un avenant.</li>
-            <li>Délais sous réserve de la fourniture des accès, données et modèles par ECACY, et d'une validation des livrables sous 48 h ouvrées.</li>
-            <li>Coûts de services tiers (IA, signature électronique) refacturés au coût réel, en sus des mensualités.</li>
-            <li>Propriété des livrables transférée au paiement intégral.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="remark">
-        <b>Remarque.</b> Ces montants correspondent à un <b>tarif exceptionnel</b>, consenti dans le cadre d'une relation de confiance. Ils se situent <b>très en deçà des tarifs habituellement appliqués par l'Agence AMRW — y compris ses tarifs les plus bas —</b> et des prix du marché pour une prestation de cette nature. À titre indicatif, le développement d'un logiciel SaaS métier comparable se situe généralement entre <b>40 000 € et plus de 100 000 € pour le seul socle</b>, sur la base de taux journaliers de 500 à 700 € HT. Ce devis ne constitue pas un tarif de référence et ne saurait être opposé à l'Agence AMRW pour d'autres prestations ou d'autres clients.
-      </div>
-
-      <div class="accept">
-        <div>Établi à Paris, le 27 juillet 2026 — <b>Agence AMRW</b></div>
-        <div>Bon pour accord (date &amp; signature) : ______________________</div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <footer>ECACY × Agence AMRW — Vue d'ensemble interactive du projet · 2026</footer>
 
 <script>
@@ -904,7 +808,7 @@ footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-s
 
   /* tabs */
   var tabs=[].slice.call(document.querySelectorAll('.tab'));
-  var PANELS=['arch','doc','devis'];
+  var PANELS=['arch','doc'];
   function show(id,keep){
     if(PANELS.indexOf(id)<0) id='arch';
     tabs.forEach(function(t){t.setAttribute('aria-selected', t.dataset.tab===id);});
@@ -914,7 +818,7 @@ footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-s
   }
   tabs.forEach(function(t){t.addEventListener('click',function(){show(t.dataset.tab);});});
   var _h=(location.hash||'').replace('#','');
-  if(_h==='doc'||_h==='devis'){ show(_h,true); }
+  if(_h==='doc'){ show('doc',true); }
   /* optional ?theme=light|dark for deep links / verification */
   var qt=(location.search.match(/theme=(light|dark)/)||[])[1];
   if(qt){ root.setAttribute('data-theme',qt); }
