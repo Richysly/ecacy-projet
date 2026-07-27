@@ -233,7 +233,7 @@ table.dv tr.sub td{background:color-mix(in srgb,var(--navy2) 8%,transparent);fon
 table.dv tr.opt td{color:var(--muted)}
 table.dv tr.opt td .desc{color:var(--muted)}
 .totaux{margin:20px 0 0;display:flex;justify-content:flex-end}
-.totaux .box{min-width:300px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.totaux .box{min-width:360px;max-width:100%;border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .totaux .row{display:flex;justify-content:space-between;gap:16px;padding:10px 16px;font-size:13px}
 .totaux .row+.row{border-top:1px solid var(--line)}
 .totaux .row.grand{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;font-weight:700;font-size:15.5px}
@@ -824,21 +824,14 @@ footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-s
           <tr>
             <td class="ref">L2</td>
             <td><b>Développement du MVP complet (« Global poussé »)</b>
-              <div class="desc">Portail client complet, ingestion omnicanale, lecture automatique des pièces, Guichet étendu à 8-10 documents, collecte &amp; relances automatiques, espace collaborateur, tableau de bord dirigeant, connexion au logiciel comptable et administration. Livraison en ~90 jours — le Lot 1 en constitue le socle.</div>
+              <div class="desc">Portail client complet, ingestion omnicanale, lecture automatique des pièces, Guichet étendu à 8-10 documents, collecte &amp; relances automatiques, espace collaborateur, tableau de bord dirigeant, connexion au logiciel comptable et administration. Livraison en ~90 jours — le Lot 1 en constitue le socle. <b>Réglé en 12 mensualités, maintenance incluse.</b></div>
             </td>
-            <td class="price">91 500 €</td>
+            <td class="price">2 000 €/mois</td>
           </tr>
           <tr class="sub">
             <td></td>
-            <td>Programme complet — Lot 1 + MVP Global poussé</td>
-            <td class="price">100 000 €</td>
-          </tr>
-          <tr class="opt">
-            <td class="ref">O1</td>
-            <td>Maintenance, hébergement et supervision
-              <div class="desc">Correctifs, sauvegardes, mises à jour de sécurité. Les coûts de services tiers (intelligence artificielle, signature électronique) sont refacturés au coût réel.</div>
-            </td>
-            <td class="price">150 €/mois</td>
+            <td>Total 1re année — Lot 1 + MVP (12 mensualités)</td>
+            <td class="price">32 500 €</td>
           </tr>
           <tr class="opt">
             <td class="ref">O2</td>
@@ -852,9 +845,10 @@ footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-s
 
       <div class="totaux">
         <div class="box">
-          <div class="row"><span>Total HT</span><span>100 000 €</span></div>
+          <div class="row"><span>Lot 1 (ponctuel)</span><span>8 500 €</span></div>
+          <div class="row"><span>MVP — 12 × 2 000 €/mois (maintenance incluse)</span><span>24 000 €</span></div>
           <div class="row"><span class="muted">TVA</span><span class="muted">Non applicable — art. 293 B du CGI</span></div>
-          <div class="row grand"><span>Total TTC</span><span>100 000 €</span></div>
+          <div class="row grand"><span>Total 1<sup>re</sup> année (HT = TTC)</span><span>32 500 €</span></div>
         </div>
       </div>
       <p class="tva-note">Le prestataire n'est pas assujetti à la TVA : les prix HT sont égaux aux prix TTC.</p>
@@ -863,9 +857,9 @@ footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-s
         <div>
           <h4>Modalités de paiement</h4>
           <ul>
-            <li>Lot 1 : 40 % à la commande (3 400 €), 60 % à la livraison (5 100 €)</li>
-            <li>MVP : par jalons — 30 % au lancement, 40 % en développement, 30 % à la livraison</li>
-            <li>Maintenance : mensuelle, à terme échu</li>
+            <li>Lot 1 : 50 % à la commande (4 250 €), 50 % à la livraison (4 250 €)</li>
+            <li>MVP : 12 mensualités de 2 000 € (maintenance incluse), à compter du lancement du développement</li>
+            <li>Au-delà de la 1<sup>re</sup> année : maintenance sur abonnement, à convenir</li>
           </ul>
         </div>
         <div>
@@ -874,6 +868,7 @@ footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-s
             <li>Devis valable 60 jours à compter de sa date d'émission.</li>
             <li>Prix fermes pour le périmètre décrit ; toute évolution fait l'objet d'un avenant.</li>
             <li>Délais sous réserve de la fourniture des accès, données et modèles par ECACY, et d'une validation des livrables sous 48 h ouvrées.</li>
+            <li>Coûts de services tiers (IA, signature électronique) refacturés au coût réel, en sus des mensualités.</li>
             <li>Propriété des livrables transférée au paiement intégral.</li>
           </ul>
         </div>
