@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECACY — Architecture & cahier des charges</title>
+<style>*{margin:0}html{-webkit-text-size-adjust:100%}</style>
+</head>
+<body>
+<title>ECACY — Architecture & cahier des charges</title>
+<style>
+:root{
+  --paper:#f5f7fa; --card:#ffffff; --ink:#12233f; --muted:#5a6b84;
+  --line:#d8e0ec; --navy:#1f3864; --navy2:#2e6fb0; --gold:#c79a2e; --gold2:#e6c14e;
+  --slate:#5b6b84; --teal:#1e8a8f; --indigo:#5a4f9e; --blue:#2e6fb0; --green:#2f8f5b;
+  --data:#22406e; --shadow:0 1px 2px rgba(18,35,63,.06),0 8px 24px rgba(18,35,63,.08);
+  --shadow-hi:0 6px 14px rgba(18,35,63,.14),0 20px 44px rgba(18,35,63,.18);
+  --edge:rgba(40,64,110,.42); --stagebg:
+    radial-gradient(1200px 500px at 12% -10%, rgba(46,111,176,.10), transparent 60%),
+    radial-gradient(900px 500px at 100% 120%, rgba(199,154,46,.10), transparent 55%);
+  --serif:Georgia,"Times New Roman",serif;
+  --sans:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#0d1524; --card:#141f33; --ink:#e7edf6; --muted:#9db0cd;
+    --line:#26344c; --navy:#9db8e0; --navy2:#6fa8de; --gold:#e6c14e; --gold2:#f2d777;
+    --slate:#8ea0bd; --teal:#4fc2c6; --indigo:#a99cf0; --blue:#6fa8de; --green:#57c489;
+    --data:#7ea3d8; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 26px rgba(0,0,0,.45);
+    --shadow-hi:0 8px 18px rgba(0,0,0,.55),0 26px 50px rgba(0,0,0,.6);
+    --edge:rgba(150,178,222,.42); --stagebg:
+      radial-gradient(1200px 500px at 12% -10%, rgba(46,111,176,.16), transparent 60%),
+      radial-gradient(900px 500px at 100% 120%, rgba(199,154,46,.12), transparent 55%);
+  }
+}
+:root[data-theme="light"]{
+  --paper:#f5f7fa; --card:#ffffff; --ink:#12233f; --muted:#5a6b84; --line:#d8e0ec;
+  --navy:#1f3864; --navy2:#2e6fb0; --gold:#c79a2e; --slate:#5b6b84; --teal:#1e8a8f;
+  --indigo:#5a4f9e; --blue:#2e6fb0; --green:#2f8f5b; --data:#22406e; --edge:rgba(40,64,110,.42);
+  --shadow:0 1px 2px rgba(18,35,63,.06),0 8px 24px rgba(18,35,63,.08);
+  --shadow-hi:0 6px 14px rgba(18,35,63,.14),0 20px 44px rgba(18,35,63,.18);
+  --stagebg:radial-gradient(1200px 500px at 12% -10%, rgba(46,111,176,.10), transparent 60%),
+    radial-gradient(900px 500px at 100% 120%, rgba(199,154,46,.10), transparent 55%);
+}
+:root[data-theme="dark"]{
+  --paper:#0d1524; --card:#141f33; --ink:#e7edf6; --muted:#9db0cd; --line:#26344c;
+  --navy:#9db8e0; --navy2:#6fa8de; --gold:#e6c14e; --slate:#8ea0bd; --teal:#4fc2c6;
+  --indigo:#a99cf0; --blue:#6fa8de; --green:#57c489; --data:#7ea3d8; --edge:rgba(150,178,222,.42);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 26px rgba(0,0,0,.45);
+  --shadow-hi:0 8px 18px rgba(0,0,0,.55),0 26px 50px rgba(0,0,0,.6);
+  --stagebg:radial-gradient(1200px 500px at 12% -10%, rgba(46,111,176,.16), transparent 60%),
+    radial-gradient(900px 500px at 100% 120%, rgba(199,154,46,.12), transparent 55%);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--navy2)}
+.wrap{max-width:1500px;margin:0 auto;padding:0 20px}
+
+/* ---------- header ---------- */
+header.top{position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);
+  background:color-mix(in srgb,var(--paper) 86%,transparent);
+  border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto}
+.mark{width:38px;height:38px;border-radius:10px;flex:none;display:grid;place-items:center;
+  color:#fff;font-weight:700;font-size:15px;letter-spacing:.5px;
+  background:linear-gradient(135deg,var(--navy),var(--navy2));box-shadow:var(--shadow)}
+:root[data-theme="dark"] .mark,@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .mark{color:#0d1524}}
+.brand h1{font-size:15px;margin:0;letter-spacing:.2px;font-weight:700}
+.brand p{margin:1px 0 0;font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:4px;box-shadow:var(--shadow)}
+.tab{appearance:none;border:0;background:transparent;color:var(--muted);font-family:inherit;
+  font-size:13.5px;font-weight:600;padding:8px 16px;border-radius:9px;cursor:pointer;
+  transition:all .18s ease;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;
+  box-shadow:0 2px 8px rgba(31,56,100,.35)}
+:root[data-theme="dark"] .tab[aria-selected="true"]{color:#0d1524}
+.themebtn{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--muted);
+  width:38px;height:38px;border-radius:10px;cursor:pointer;font-size:16px;display:grid;place-items:center;
+  transition:all .18s}
+.themebtn:hover{color:var(--ink);border-color:var(--navy2)}
+:focus-visible{outline:2px solid var(--navy2);outline-offset:2px}
+
+/* ---------- panels ---------- */
+.panel{display:none}
+.panel.active{display:block;animation:fade .4s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* ---------- architecture ---------- */
+.arch{padding:24px 0 40px}
+.arch .lead{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap;margin-bottom:14px}
+.arch h2{font-size:23px;margin:0 0 4px;letter-spacing:-.3px}
+.arch .lead p{margin:0;color:var(--muted);font-size:13.5px;max-width:70ch}
+.hint{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;
+  border:1px dashed var(--line);border-radius:8px;padding:6px 10px;white-space:nowrap}
+.scroll{overflow-x:auto;overflow-y:hidden;padding:8px 2px 14px;border-radius:16px}
+.stage{position:relative;min-width:1200px;background:var(--stagebg);
+  border:1px solid var(--line);border-radius:16px;padding:20px 22px 24px}
+.cols{position:relative;z-index:2;display:grid;grid-template-columns:repeat(6,1fr);gap:26px;align-items:start}
+.col{display:flex;flex-direction:column;gap:16px}
+.colhead{font-size:11px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;
+  color:var(--muted);text-align:center;padding-bottom:8px;border-bottom:2px solid var(--fam,var(--line));
+  margin-bottom:2px}
+.node{position:relative;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--fam);
+  border-radius:12px;padding:11px 12px 12px;box-shadow:var(--shadow);cursor:default;
+  transition:transform .2s cubic-bezier(.2,.7,.3,1),box-shadow .2s,border-color .2s,opacity .25s;
+  opacity:0;transform:translateY(8px)}
+.stage.ready .node{opacity:1;transform:none}
+.node:hover{transform:translateY(-4px);box-shadow:var(--shadow-hi);border-color:var(--fam)}
+.node .nt{font-size:13px;font-weight:700;line-height:1.25;display:flex;gap:6px;align-items:baseline}
+.node .ns{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.3}
+.node .ico{font-size:14px;flex:none}
+.badge{font-size:9.5px;font-weight:700;letter-spacing:.4px;color:#fff;background:var(--slate);
+  border-radius:5px;padding:1px 5px;vertical-align:middle;margin-left:auto;flex:none}
+:root[data-theme="dark"] .badge{color:#0d1524}
+.node.star{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset,var(--shadow)}
+.node.human{border-left-color:var(--gold);background:
+   linear-gradient(180deg,color-mix(in srgb,var(--gold) 12%,var(--card)),var(--card))}
+.node.human .tag{display:inline-block;margin-top:6px;font-size:10px;font-weight:700;color:var(--gold);
+  letter-spacing:.3px;text-transform:uppercase}
+/* families */
+.f-act{--fam:var(--slate)} .f-can{--fam:var(--teal)} .f-orc{--fam:var(--indigo)}
+.f-mot{--fam:var(--blue)} .f-dat{--fam:var(--data)} .f-con{--fam:var(--green)}
+
+svg.edges{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:visible}
+.edge{fill:none;stroke:var(--edge);stroke-width:1.7;transition:stroke .2s,stroke-width .2s,opacity .25s}
+.edge.dash{stroke-dasharray:5 6}
+.stage.dim .edge:not(.hot){opacity:.1}
+.stage.dim .node:not(.hot){opacity:.34}
+.edge.hot{stroke:var(--gold);stroke-width:3}
+
+/* flagship ribbon */
+.flag{margin-top:26px;background:
+   linear-gradient(180deg,color-mix(in srgb,var(--gold) 12%,var(--card)),var(--card));
+  border:1px solid color-mix(in srgb,var(--gold) 45%,var(--line));border-radius:16px;padding:16px 18px 18px}
+.flag .fh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.flag .fh b{font-size:14px;letter-spacing:.2px}
+.flag .fh .pill{font-size:11px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--gold),var(--gold2));
+  padding:3px 10px;border-radius:20px;letter-spacing:.2px}
+:root[data-theme="dark"] .flag .fh .pill{color:#0d1524}
+.steps{display:flex;gap:0;align-items:stretch;overflow-x:auto;padding-bottom:4px}
+.step{position:relative;flex:1 1 0;min-width:104px;max-width:220px;padding:2px 16px 2px 0;display:flex}
+.step:last-child{padding-right:0}
+.stepcard{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:9px 11px;
+  width:100%;box-shadow:var(--shadow);transition:transform .18s,box-shadow .18s,border-color .18s}
+.stepcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-hi);border-color:var(--gold)}
+.step .num{font-size:10px;font-weight:800;color:var(--gold);letter-spacing:.5px}
+.step .st{font-size:12px;font-weight:700;margin-top:2px;line-height:1.2}
+.step .sd{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.25}
+.step:not(:last-child):after{content:"";position:absolute;right:6px;top:50%;width:10px;height:10px;
+  border-top:2px solid var(--gold);border-right:2px solid var(--gold);transform:translateY(-50%) rotate(45deg);opacity:.8}
+.step.val .stepcard{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset,var(--shadow)}
+
+/* legend */
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:20px;align-items:center;font-size:12px;color:var(--muted)}
+.legend .grp{display:flex;align-items:center;gap:7px}
+.legend .sw{width:13px;height:13px;border-radius:4px;background:var(--fam);flex:none}
+.legend .arrowk{display:inline-flex;align-items:center;gap:5px}
+.legend svg{overflow:visible}
+
+/* ---------- cahier des charges ---------- */
+.doc{padding:26px 0 70px}
+.doclayout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:38px;align-items:start}
+.toc{position:sticky;top:78px;max-height:calc(100vh-100px);overflow:auto;
+  border:1px solid var(--line);border-radius:14px;background:var(--card);padding:14px 12px;box-shadow:var(--shadow)}
+.toc .tt{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);
+  padding:2px 8px 10px}
+.toc a{display:block;font-size:12.5px;color:var(--muted);text-decoration:none;padding:6px 9px;border-radius:8px;
+  line-height:1.3;border-left:2px solid transparent;transition:all .15s}
+.toc a:hover{background:color-mix(in srgb,var(--navy2) 9%,transparent);color:var(--ink)}
+.toc a.on{color:var(--navy2);background:color-mix(in srgb,var(--navy2) 12%,transparent);
+  border-left-color:var(--navy2);font-weight:600}
+.article{max-width:none;font-family:var(--serif);font-size:15.5px;line-height:1.68;color:var(--ink)}
+.article h2{font-family:var(--sans);font-size:22px;letter-spacing:-.3px;margin:44px 0 6px;padding-bottom:8px;
+  border-bottom:2px solid var(--gold);text-wrap:balance;scroll-margin-top:80px}
+.article h2:first-of-type{margin-top:6px}
+.article h3{font-family:var(--sans);font-size:16px;color:var(--navy2);margin:26px 0 6px;text-wrap:balance}
+.article h4{font-family:var(--sans);font-size:13.5px;margin:18px 0 4px;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--muted)}
+.article p{margin:9px 0}
+.article strong{color:var(--ink);font-weight:700}
+.article a{color:var(--navy2);text-decoration-color:color-mix(in srgb,var(--navy2) 40%,transparent)}
+.article ul,.article ol{margin:9px 0 9px 2px;padding-left:22px}
+.article li{margin:4px 0}
+.article code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:12.5px;
+  background:color-mix(in srgb,var(--navy2) 10%,transparent);padding:1px 5px;border-radius:5px;color:var(--ink)}
+.article hr{border:0;border-top:1px solid var(--line);margin:26px 0}
+blockquote{margin:16px 0;padding:12px 16px;border-left:4px solid var(--gold);border-radius:0 10px 10px 0;
+  background:color-mix(in srgb,var(--gold) 10%,var(--card));font-style:italic;color:var(--ink)}
+.ascii{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;line-height:1.35;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;color:var(--muted);
+  box-shadow:var(--shadow);white-space:pre;font-style:normal}
+.tw{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+.article table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:12.5px;line-height:1.4}
+.article th{background:var(--navy);color:#fff;text-align:left;padding:9px 11px;font-weight:600;
+  position:sticky;top:0;font-size:12px}
+:root[data-theme="dark"] .article th{color:#0d1524;background:var(--navy)}
+.article td{padding:8px 11px;border-top:1px solid var(--line);vertical-align:top}
+.article tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--navy2) 5%,transparent)}
+.article .a-r{text-align:right;font-variant-numeric:tabular-nums} .article .a-c{text-align:center}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:2px}
+.dot-r{background:#d64545} .dot-o{background:#e08a2e} .dot-y{background:#e0c02e}
+.star{color:var(--gold);font-size:13px} .warn{color:var(--gold);font-weight:700}
+.docnote{font-family:var(--sans);font-size:12px;color:var(--muted);background:var(--card);
+  border:1px solid var(--line);border-left:3px solid var(--navy2);border-radius:10px;padding:10px 14px;margin-bottom:18px}
+
+footer{border-top:1px solid var(--line);padding:20px 0;color:var(--muted);font-size:12px;text-align:center}
+
+@media (max-width:1080px){
+  .doclayout{grid-template-columns:1fr}
+  .toc{position:static;max-height:none;margin-bottom:20px}
+}
+@media (max-width:640px){
+  .brand p{display:none} .tab{padding:7px 11px;font-size:12.5px}
+  .arch h2{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .stage .node{opacity:1;transform:none}
+}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <div class="mark">EC</div>
+      <div>
+        <h1>ECACY — Plateforme d'expertise comptable augmentée par l'IA</h1>
+        <p>Vue d'ensemble du projet · préparé par l'Agence AMRW</p>
+      </div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-tab="arch">Architecture</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="doc">Cahier des charges</button>
+    </div>
+    <button class="themebtn" id="theme" title="Thème clair / sombre" aria-label="Basculer le thème">◐</button>
+  </div>
+</header>
+
+<!-- ============ ARCHITECTURE ============ -->
+<section class="panel active" id="p-arch">
+  <div class="wrap arch">
+    <div class="lead">
+      <div>
+        <h2>Comment l'application fonctionne, d'un coup d'œil</h2>
+        <p>Les informations circulent de gauche à droite — du client jusqu'aux systèmes externes — et reviennent (double sens). Chaque couleur est une famille de composants. Survolez un bloc pour isoler ses connexions.</p>
+      </div>
+      <div class="hint">↔ &nbsp;Défilez horizontalement si besoin</div>
+    </div>
+
+    <div class="scroll">
+      <div class="stage" id="stage">
+        <svg class="edges" id="edges" aria-hidden="true">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--edge)"></path>
+            </marker>
+            <marker id="ahh" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--gold)"></path>
+            </marker>
+          </defs>
+        </svg>
+
+        <div class="cols">
+          <!-- col 1 -->
+          <div class="col f-act">
+            <div class="colhead">Acteurs</div>
+            <div class="node" data-id="dir" style="margin-top:64px">
+              <div class="nt"><span class="ico">🏢</span>Dirigeant / Client</div>
+              <div class="ns">TPE &amp; PME du portefeuille</div>
+            </div>
+          </div>
+          <!-- col 2 -->
+          <div class="col f-can">
+            <div class="colhead">Canaux</div>
+            <div class="node" data-id="portail"><div class="nt"><span class="ico">🖥️</span>Portail web · appli</div><div class="ns">PWA — dépôt de pièces, suivi, demandes</div></div>
+            <div class="node" data-id="email"><div class="nt"><span class="ico">✉️</span>E-mail</div><div class="ns">Boîte dédiée, pièces jointes rattachées</div></div>
+            <div class="node" data-id="tel"><div class="nt"><span class="ico">📞</span>Agent vocal 24/7<span class="badge">V2</span></div><div class="ns">Téléphone, réponse au fond</div></div>
+            <div class="node" data-id="wa"><div class="nt"><span class="ico">💬</span>WhatsApp · SMS</div><div class="ns">Canal courant du client — dès la V1</div></div>
+          </div>
+          <!-- col 3 -->
+          <div class="col f-orc">
+            <div class="colhead">Orchestration &amp; supervision</div>
+            <div class="node" data-id="routage" style="margin-top:20px"><div class="nt"><span class="ico">🧭</span>Routage &amp; classification</div><div class="ns">Identifie l'intention de chaque demande</div></div>
+            <div class="node" data-id="workflow"><div class="nt"><span class="ico">⚙️</span>Moteur de workflows</div><div class="ns">File d'exceptions → collaborateur</div></div>
+            <div class="node human" data-id="valid"><div class="nt"><span class="ico">👤</span>Validation humaine</div><div class="ns">Expert-comptable</div><span class="tag">Rien ne sort sans validation</span></div>
+          </div>
+          <!-- col 4 -->
+          <div class="col f-mot">
+            <div class="colhead">Moteurs</div>
+            <div class="node" data-id="mia" style="margin-top:20px"><div class="nt"><span class="ico">🧠</span>Moteur IA</div><div class="ns">Extraction · OCR · dialogue</div></div>
+            <div class="node star" data-id="mdoc"><div class="nt"><span class="ico">📄</span>Moteur documentaire <span class="star">★</span></div><div class="ns">Guichet Attestations &amp; Actes + e-signature</div></div>
+            <div class="node" data-id="mreg"><div class="nt"><span class="ico">📐</span>Moteur de règles</div><div class="ns">Contrôles TVA · complétude · alertes</div></div>
+          </div>
+          <!-- col 5 -->
+          <div class="col f-dat">
+            <div class="colhead">Données</div>
+            <div class="node" data-id="base" style="margin-top:52px"><div class="nt"><span class="ico">🔐</span>Base isolée par cabinet</div><div class="ns">Architecture multi-tenant, hébergement UE</div></div>
+            <div class="node" data-id="audit"><div class="nt"><span class="ico">🧾</span>Journal d'audit</div><div class="ns">Traçable &amp; opposable — conformité</div></div>
+          </div>
+          <!-- col 6 -->
+          <div class="col f-con">
+            <div class="colhead">Connecteurs externes</div>
+            <div class="node" data-id="prod"><div class="nt"><span class="ico">📚</span>Logiciel de production</div><div class="ns">Écritures — API ou fichiers</div></div>
+            <div class="node" data-id="banque"><div class="nt"><span class="ico">🏦</span>Banque · agrégation<span class="badge">V2</span></div><div class="ns">Rapprochement bancaire</div></div>
+            <div class="node" data-id="pdp"><div class="nt"><span class="ico">🧮</span>PDP e-invoicing<span class="badge">V2</span></div><div class="ns">Facturation électronique 2026</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- flagship -->
+    <div class="flag">
+      <div class="fh">
+        <span class="pill">Parcours phare</span>
+        <b>Guichet Attestations &amp; Actes — de la demande au document signé</b>
+        <span style="margin-left:auto;font-size:11.5px;color:var(--muted);font-weight:600">&lt; 15 min ouvrées · ~62 s de temps humain</span>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="stepcard"><div class="num">01</div><div class="st">Demande</div><div class="sd">Le client demande (tél, e-mail, portail)</div></div></div>
+        <div class="step"><div class="stepcard"><div class="num">02</div><div class="st">Qualification</div><div class="sd">L'IA identifie le type de document</div></div></div>
+        <div class="step"><div class="stepcard"><div class="num">03</div><div class="st">Collecte</div><div class="sd">Données récupérées dans le dossier</div></div></div>
+        <div class="step"><div class="stepcard"><div class="num">04</div><div class="st">Contrôle</div><div class="sd">Exercice clos ? données à jour ?</div></div></div>
+        <div class="step"><div class="stepcard"><div class="num">05</div><div class="st">Génération</div><div class="sd">Document conforme pré-rempli</div></div></div>
+        <div class="step val"><div class="stepcard"><div class="num">06</div><div class="st">Validation</div><div class="sd">Expert-comptable — obligatoire</div></div></div>
+        <div class="step"><div class="stepcard"><div class="num">07</div><div class="st">Signature</div><div class="sd">Signature électronique eIDAS</div></div></div>
+        <div class="step"><div class="stepcard"><div class="num">08</div><div class="st">Délivrance</div><div class="sd">Envoi + archivage + journal d'audit</div></div></div>
+      </div>
+    </div>
+
+    <!-- legend -->
+    <div class="legend">
+      <span class="grp f-act"><span class="sw"></span>Acteurs</span>
+      <span class="grp f-can"><span class="sw"></span>Canaux</span>
+      <span class="grp f-orc"><span class="sw"></span>Orchestration</span>
+      <span class="grp f-mot"><span class="sw"></span>Moteurs</span>
+      <span class="grp f-dat"><span class="sw"></span>Données</span>
+      <span class="grp f-con"><span class="sw"></span>Connecteurs</span>
+      <span class="grp" style="color:var(--gold);font-weight:700"><span class="star">★</span>&nbsp;Point différenciant</span>
+      <span class="grp"><span class="arrowk"><svg width="30" height="10"><line x1="1" y1="5" x2="29" y2="5" stroke="var(--edge)" stroke-width="1.7"/><path d="M22,1 L29,5 L22,9" fill="none" stroke="var(--edge)" stroke-width="1.7"/><path d="M8,1 L1,5 L8,9" fill="none" stroke="var(--edge)" stroke-width="1.7"/></svg></span>Double sens de circulation</span>
+      <span class="grp"><span class="badge" style="background:var(--slate)">V2</span>&nbsp;Phase ultérieure</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CAHIER DES CHARGES ============ -->
+<section class="panel" id="p-doc">
+  <div class="wrap doc">
+    <div class="doclayout">
+      <nav class="toc" id="toc">
+        <div class="tt">Sommaire</div>
+        <a href="#1-resume-executif">1. RÉSUMÉ EXÉCUTIF</a>
+<a href="#2-presentation-du-client-et-de-son-contexte">2. PRÉSENTATION DU CLIENT ET DE SON CONTEXTE</a>
+<a href="#3-analyse-du-secteur-et-de-la-niche">3. ANALYSE DU SECTEUR ET DE LA NICHE</a>
+<a href="#4-tendances-de-marche">4. TENDANCES DE MARCHÉ</a>
+<a href="#5-benchmark-concurrentiel">5. BENCHMARK CONCURRENTIEL</a>
+<a href="#6-problemes-observes-sur-le-marche">6. PROBLÈMES OBSERVÉS SUR LE MARCHÉ</a>
+<a href="#7-solutions-apportees-par-le-projet">7. SOLUTIONS APPORTÉES PAR LE PROJET</a>
+<a href="#8-point-differenciant-majeur">8. POINT DIFFÉRENCIANT MAJEUR</a>
+<a href="#9-personas-cibles">9. PERSONAS CIBLES</a>
+<a href="#10-parcours-utilisateurs">10. PARCOURS UTILISATEURS</a>
+<a href="#11-fonctionnalites-du-mvp-palier-1">11. FONCTIONNALITÉS DU MVP (Palier 1)</a>
+<a href="#12-fonctionnalites-secondaires-v2-et-v3">12. FONCTIONNALITÉS SECONDAIRES / V2 ET V3</a>
+<a href="#13-exigences-techniques-web-et-mobile">13. EXIGENCES TECHNIQUES WEB ET MOBILE</a>
+<a href="#14-contraintes-securite-conformite-et-maintenance">14. CONTRAINTES SÉCURITÉ, CONFORMITÉ ET MAINTENANCE</a>
+<a href="#15-recommandations-produit-et-business">15. RECOMMANDATIONS PRODUIT ET BUSINESS</a>
+<a href="#16-risques-angles-morts-et-points-a-valider">16. RISQUES, ANGLES MORTS ET POINTS À VALIDER</a>
+<a href="#annexe-sources">ANNEXE — SOURCES</a>
+      </nav>
+      <article class="article" id="article">
+        <div class="docnote">Version client du cahier des charges — cadrage produit, marché et recommandations. Le volet interne d'estimation et de chiffrage de l'agence n'y figure pas.</div>
+        <p><strong>Client :</strong> Cabinet ECACY (Youns El Khalifa) — Paris</p>
+<p><strong>Prestataire :</strong> Agence AMRW</p>
+<p><strong>Date :</strong> 24 juillet 2026</p>
+<p><strong>Version :</strong> 1.0 — document de cadrage, à valider avant chiffrage ferme</p>
+<hr>
+<h2 id="1-resume-executif">1. RÉSUMÉ EXÉCUTIF</h2>
+<h3>1.1 Ce que demande le client</h3>
+<p>ECACY, cabinet d'expertise comptable parisien pluridisciplinaire (expertise comptable, audit/transaction services, conseil, formation banque-assurance), veut construire une plateforme d'<strong>expertise comptable augmentée par l'IA</strong> poursuivant <strong>deux objectifs distincts</strong> qu'il est essentiel de ne pas confondre :</p>
+<div class="tw"><table><thead><tr><th class="a-l">#</th><th class="a-l">Objectif</th><th class="a-l">Nature</th><th class="a-l">Horizon</th></tr></thead><tbody><tr><td class="a-l"><strong>A</strong></td><td class="a-l">Automatiser la production comptable et la relation client d'ECACY (appels, e-mails, pièces, écritures, relances, documents juridiques répétitifs)</td><td class="a-l">Outil interne / avantage concurrentiel du cabinet</td><td class="a-l">Court terme</td></tr><tr><td class="a-l"><strong>B</strong></td><td class="a-l">Industrialiser cette solution en un <strong>produit SaaS multi-cabinets</strong>, revendu en marque blanche à d'autres cabinets à <strong>190 €/mois</strong>, la maintenance et la personnalisation étant assurées par AMRW</td><td class="a-l">Édition logicielle / nouvelle ligne de revenus</td><td class="a-l">Moyen terme</td></tr></tbody></table></div>
+<p><strong>Ces deux objectifs n'ont ni la même complexité, ni le même coût, ni le même risque.</strong> L'objectif A est un projet d'outillage métier maîtrisable. L'objectif B est un projet d'édition logicielle SaaS multi-tenant, avec des contraintes de sécurité, d'isolation des données, de support et d'économie unitaire d'un tout autre ordre.</p>
+<h3>1.2 Le constat marché</h3>
+<p>Le marché français de l'expertise comptable présente une configuration rare : <strong>une pénurie structurelle de main-d'œuvre</strong> (plus de 30 000 besoins de recrutement pour 10 000 à 15 000 profils qualifiés disponibles, délais de recrutement passés de 6 à ~14 semaines), <strong>un choc réglementaire imminent</strong> (obligation de réception de factures électroniques pour toutes les entreprises au 1er septembre 2026, soit dans 5 semaines), et <strong>un marché logiciel déjà très capitalisé</strong> (3,2 Md€ investis dans la ComptaTech française entre 2019 et 2025, Pennylane valorisée 3,5 Md€ en janvier 2026).</p>
+<p>Conclusion stratégique : <strong>il n'y a plus d'espace pour créer un « Pennylane de plus »</strong>. En revanche, il existe un espace réel sur ce que les plateformes de production comptable ne traitent pas : <strong>la relation client entrante non structurée</strong> (appels, e-mails, WhatsApp) et <strong>la production documentaire administrative et juridique à la demande</strong> (attestations, PV d'AG, actes) — précisément ce qu'ECACY a lui-même listé dans son document « Tâches répétitives ».</p>
+<h3>1.3 Le point différenciant retenu</h3>
+<p><strong>Le « Guichet Attestations &amp; Actes en 15 minutes ».</strong></p>
+<p>Un dirigeant demande par téléphone, e-mail ou WhatsApp une attestation de chiffre d'affaires, une attestation de régularité fiscale et sociale, un PV d'AGE de rémunération ou une procuration. L'IA identifie la demande, va chercher les données dans le dossier comptable, pré-remplit le document conforme, le soumet à l'expert-comptable pour validation en un clic, le fait signer électroniquement et le délivre. <strong>Délai cible : 15 minutes ouvrées, contre 2 à 10 jours aujourd'hui dans la plupart des cabinets.</strong></p>
+<p>C'est le seul irritant du marché qui soit simultanément : (a) massivement répétitif côté cabinet, (b) urgent et anxiogène côté client (banque, bailleur, appel d'offres, marché public), (c) non couvert par les plateformes de production comptable, et (d) déjà documenté par ECACY comme sa charge répétitive n°1.</p>
+<h3>1.4 Les trois alertes à traiter avant de signer</h3>
+<ol start="1"><li><strong>Le prix cible de 190 €/mois n'est pas viable en l'état</strong> pour une offre incluant l'agent vocal en illimité. Le coût variable d'IA seul (voix, OCR, LLM) dépasse ce montant dès un usage moyen. Le modèle doit être repensé en socle + compteurs d'usage — voir la recommandation R10 au §15.2.</li><li><strong>L'accès aux logiciels comptables du marché est le risque technique n°1.</strong> L'automatisation promise (« l'écriture est intégrée dans votre logiciel comptable ») dépend d'API tierces dont la disponibilité, le coût et les conditions d'usage varient fortement selon l'éditeur. À qualifier avant tout engagement de résultat.</li><li><strong>La responsabilité professionnelle et le secret professionnel</strong> (décret n° 2012-432) imposent une validation humaine sur tout ce qui engage l'expert-comptable. Le produit doit être conçu comme un <strong>copilote à validation obligatoire</strong>, jamais comme un automate autonome. L'AI Act entre par ailleurs en application en août 2026.</li></ol>
+<h3>1.5 Recommandation de trajectoire</h3>
+<p>Trois paliers, séquencés, chacun vendable et facturable séparément :</p>
+<div class="tw"><table><thead><tr><th class="a-l">Palier</th><th class="a-l">Contenu</th><th class="a-l">Finalité</th></tr></thead><tbody><tr><td class="a-l"><strong>P1 — Cabinet augmenté (MVP)</strong></td><td class="a-l">Portail client, ingestion omnicanale (e-mail, <strong>WhatsApp/SMS</strong>, upload), OCR + extraction, relances automatiques, <strong>moteur d'attestations &amp; actes</strong>, tableau de bord dirigeant, console collaborateur</td><td class="a-l">Prouver la valeur chez ECACY, gagner du temps immédiatement</td></tr><tr><td class="a-l"><strong>P2 — Agent conversationnel</strong></td><td class="a-l">Agent vocal 24/7, agent e-mail conversationnel, mémoire dossier</td><td class="a-l">Différenciation commerciale forte</td></tr><tr><td class="a-l"><strong>P3 — Produit multi-cabinets</strong></td><td class="a-l">Multi-tenant, marque blanche, provisioning, facturation abonnement, back-office AMRW</td><td class="a-l">Passage à l'édition logicielle</td></tr></tbody></table></div>
+<p><strong>Avant même le palier P1, une première livraison (« Lot 1 ») est proposée en 3 à 4 semaines</strong> : un pilote fonctionnel du Guichet Attestations &amp; Actes sur les documents les plus demandés, en conditions réelles chez ECACY. Il prouve la valeur et sécurise la décision d'engager le MVP complet (détail au §11.1).</p>
+<p>Le passage de P1 à P3 ne doit pas être un « et aussi » : c'est une refonte d'architecture qui doit être <strong>anticipée dès P1</strong> (isolation des données par cabinet dès la conception) mais <strong>facturée à P3</strong>.</p>
+<hr>
+<h2 id="2-presentation-du-client-et-de-son-contexte">2. PRÉSENTATION DU CLIENT ET DE SON CONTEXTE</h2>
+<h3>2.1 Le client</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Élément</th><th class="a-l">Donnée</th><th class="a-l">Source</th></tr></thead><tbody><tr><td class="a-l">Société</td><td class="a-l">Cabinet ECACY</td><td class="a-l">ecacy.com</td></tr><tr><td class="a-l">Dirigeant</td><td class="a-l">Youns El Khalifa, Associé Fondateur</td><td class="a-l">ecacy.com</td></tr><tr><td class="a-l">Secteur</td><td class="a-l">Expertise comptable — services aux entreprises (NAF 6920Z)</td><td class="a-l">ecacy.com</td></tr><tr><td class="a-l">Positionnement affiché</td><td class="a-l">Cabinet pluridisciplinaire et spécialisé, suivi et conseil tout au long du développement de l'entreprise</td><td class="a-l">ecacy.com</td></tr><tr><td class="a-l">Domaines de service</td><td class="a-l">Expertise comptable (tenue, gestion, suivi) · Audit – Transaction services · Conseil – Accompagnement · Formation Banque et Assurance</td><td class="a-l">ecacy.com</td></tr><tr><td class="a-l">Zone géographique</td><td class="a-l">Paris (16e, mention également du 9e)</td><td class="a-l">ecacy.com</td></tr><tr><td class="a-l">Cible actuelle</td><td class="a-l">Entreprises (TPE/PME), accompagnement comptable, fiscal, social, juridique, financier</td><td class="a-l">ecacy.com</td></tr><tr><td class="a-l">Signal digital existant</td><td class="a-l">Mention d'un « Cabinet digital » sur le site</td><td class="a-l">ecacy.com</td></tr><tr><td class="a-l">Tarifs</td><td class="a-l">Non publiés</td><td class="a-l">ecacy.com</td></tr></tbody></table></div>
+<p><strong>Note de positionnement :</strong> la mention « Audit – Transaction services » et « Formation Banque et Assurance » indique un cabinet à composante <em>conseil et haut de bilan</em>, pas un cabinet de tenue de masse. C'est cohérent avec l'intention exprimée d'un positionnement <strong>premium</strong> plutôt que d'une guerre des prix. Ce point structure tout le cahier des charges.</p>
+<h3>2.2 Reformulation du besoin</h3>
+<p>Le client exprime, dans ses deux documents, une intention en quatre couches :</p>
+<ol start="1"><li><strong>Couche relation client</strong> — un assistant digital qui répond aux appels 24h/24, traite les e-mails entrants, demande les pièces manquantes, répond aux questions courantes (TVA, échéances, paiements, relances) et prend rendez-vous.</li><li><strong>Couche production</strong> — récupération des factures depuis les e-mails, OCR + IA, classement automatique, proposition d'écritures, rapprochement bancaire, détection d'anomalies, relance des pièces manquantes. <em>« Le collaborateur ne valide plus que les exceptions. »</em></li><li><strong>Couche organisation</strong> — un modèle à trois niveaux : IA (70-90 % des opérations) → équipe de production externalisée (dossiers complexes) → collaborateurs du cabinet (contrôles et conseil uniquement).</li><li><strong>Couche produit</strong> — un environnement duplicable, revendu à d'autres cabinets en abonnement à 190 €/mois, avec maintenance et personnalisation par AMRW.</li></ol>
+<p>À quoi s'ajoute, via le second document, une <strong>cinquième couche non explicitement formulée mais parfaitement documentée</strong> : l'automatisation de la production des 20 documents administratifs et juridiques répétitifs du cabinet.</p>
+<h3>2.3 Objectifs</h3>
+<p><strong>Objectif principal (déduit)</strong></p>
+<p>Faire passer ECACY d'un modèle où la marge est plafonnée par le temps de saisie de ses collaborateurs à un modèle où la marge est portée par le conseil, en transférant à l'IA le traitement de premier niveau — puis monétiser cette capacité auprès d'autres cabinets.</p>
+<p><strong>Objectifs secondaires</strong></p>
+<ul><li>Réduire le temps collaborateur consacré à la saisie et à la relance de pièces.</li><li>Absorber de la croissance de portefeuille sans recruter (contexte de pénurie).</li><li>Améliorer la qualité de service perçue (réactivité, disponibilité) pour justifier un positionnement premium.</li><li>Créer une barrière à l'entrée non réplicable par un simple achat de logiciel.</li><li>Ouvrir une ligne de revenus récurrents d'éditeur (SaaS multi-cabinets).</li></ul>
+<p><strong>Hypothèses implicites du client, à valider</strong></p>
+<div class="tw"><table><thead><tr><th class="a-l">#</th><th class="a-l">Hypothèse implicite</th><th class="a-l">Statut</th></tr></thead><tbody><tr><td class="a-l">H1</td><td class="a-l">L'IA peut traiter 70 à 90 % des opérations sans intervention humaine</td><td class="a-l"><strong>À nuancer fortement.</strong> Réaliste sur l'extraction et le pré-classement, optimiste sur la proposition d'écriture (plan comptable et analytique propres à chaque dossier), irréaliste sans reprise sur les cas TVA complexes (autoliquidation, intracommunautaire, prorata, TVA sur encaissement)</td></tr><tr><td class="a-l">H2</td><td class="a-l">Les logiciels comptables du marché exposent des API exploitables</td><td class="a-l"><strong>À qualifier au cas par cas.</strong> Variable selon l'éditeur, souvent conditionné à un partenariat ou à un coût</td></tr><tr><td class="a-l">H3</td><td class="a-l">Un cabinet acceptera de payer 190 €/mois pour cette solution</td><td class="a-l"><strong>Plausible mais insuffisant.</strong> 190 € est le prix d'un outil complémentaire, pas d'une plateforme de production ; à confronter au coût variable réel (voir §15.2)</td></tr><tr><td class="a-l">H4</td><td class="a-l">La solution est « duplicable » à faible coût marginal</td><td class="a-l"><strong>Faux en l'état.</strong> Chaque cabinet a son logiciel de production, son plan comptable, ses modèles de documents, ses process. Le coût de personnalisation est le vrai enjeu du modèle économique</td></tr><tr><td class="a-l">H5</td><td class="a-l">Une équipe de production externalisée (niveau 2) est disponible ou constituable</td><td class="a-l"><strong>Non documenté.</strong> Impacte le modèle opérationnel et soulève une question de secret professionnel et de sous-traitance RGPD</td></tr></tbody></table></div>
+<h3>2.4 Zones floues et informations manquantes</h3>
+<p>À obtenir du client <strong>avant chiffrage ferme</strong> :</p>
+<div class="tw"><table><thead><tr><th class="a-l">#</th><th class="a-l">Question</th><th class="a-l">Pourquoi c'est bloquant</th></tr></thead><tbody><tr><td class="a-l">Q1</td><td class="a-l">Quel logiciel de production comptable ECACY utilise-t-il aujourd'hui ? (Cegid, ACD, MyUnisoft, Pennylane, Inqom, Sage, Fulll…)</td><td class="a-l">Détermine la faisabilité et le coût du connecteur — poste de risque n°1</td></tr><tr><td class="a-l">Q2</td><td class="a-l">Combien de dossiers clients ? Combien de collaborateurs ? Volume mensuel de pièces ?</td><td class="a-l">Dimensionne l'infrastructure, les coûts IA et le ROI</td></tr><tr><td class="a-l">Q3</td><td class="a-l">Volume d'appels et d'e-mails entrants par mois ? Répartition des motifs ?</td><td class="a-l">Dimensionne l'agent vocal et calcule son ROI réel</td></tr><tr><td class="a-l">Q4</td><td class="a-l">Combien de documents de la liste « Tâches répétitives » sont produits par mois, et par qui ?</td><td class="a-l">Chiffre le gain du point différenciant</td></tr><tr><td class="a-l">Q5</td><td class="a-l">ECACY est-il déjà engagé sur une PDP pour la réforme facturation électronique ?</td><td class="a-l">Échéance au 1er septembre 2026 — impacte le périmètre et le calendrier</td></tr><tr><td class="a-l">Q6</td><td class="a-l">Budget enveloppe et échéance cible ?</td><td class="a-l">Détermine le découpage MVP / complet</td></tr><tr><td class="a-l">Q7</td><td class="a-l">ECACY veut-il commercialiser sous sa marque, ou en marque blanche neutre ?</td><td class="a-l">Impacte le positionnement produit et le design system</td></tr><tr><td class="a-l">Q8</td><td class="a-l">Qui porte la responsabilité éditeur du produit revendu (ECACY, AMRW, une co-entreprise) ?</td><td class="a-l">Impacte la PI, la RC pro, la répartition des revenus</td></tr><tr><td class="a-l">Q9</td><td class="a-l">Existe-t-il un DPO ou un référent conformité ?</td><td class="a-l">RGPD + secret professionnel + AI Act</td></tr><tr><td class="a-l">Q10</td><td class="a-l">L'équipe de production externalisée (niveau 2) existe-t-elle ? Où est-elle localisée ?</td><td class="a-l">Transfert de données hors UE = sujet RGPD majeur</td></tr></tbody></table></div>
+<hr>
+<h2 id="3-analyse-du-secteur-et-de-la-niche">3. ANALYSE DU SECTEUR ET DE LA NICHE</h2>
+<h3>3.1 Le secteur : expertise comptable France</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Indicateur</th><th class="a-l">Valeur</th><th class="a-l">Source</th></tr></thead><tbody><tr><td class="a-l">Experts-comptables inscrits à l'Ordre</td><td class="a-l">21 611 (2026)</td><td class="a-l">les-experts-comptables.fr</td></tr><tr><td class="a-l">Sociétés d'expertise comptable</td><td class="a-l">19 490</td><td class="a-l">les-experts-comptables.fr</td></tr><tr><td class="a-l">Salariés du secteur</td><td class="a-l">&gt; 186 000</td><td class="a-l">les-experts-comptables.fr</td></tr><tr><td class="a-l">Postes vacants</td><td class="a-l">&gt; 10 000 (fin 2023), ~30 000 projets de recrutement</td><td class="a-l">L'Essentiel de l'Éco / France Travail</td></tr><tr><td class="a-l">Profils qualifiés disponibles</td><td class="a-l">10 000 à 15 000</td><td class="a-l">financepeople.fr</td></tr><tr><td class="a-l">Délai moyen de recrutement</td><td class="a-l">~14 semaines (contre 6 en 2018)</td><td class="a-l">escg-rennes.fr</td></tr><tr><td class="a-l">Investissements ComptaTech FR 2019-2025</td><td class="a-l">3,2 Md€ — 6 licornes</td><td class="a-l">daf-mag.fr</td></tr></tbody></table></div>
+<h3>3.2 Structure du marché</h3>
+<p>Le marché est <strong>fragmenté et polarisé</strong> :</p>
+<ul><li><strong>Les grands cabinets et réseaux</strong> — capacité d'investissement technologique propre, équipes internes.</li><li><strong>Les cabinets de taille intermédiaire (5 à 50 collaborateurs)</strong> — segment d'ECACY, et <strong>cœur de cible du produit revendu</strong>. Ils subissent la pression concurrentielle des cabinets en ligne, la pénurie de recrutement et le choc réglementaire, sans avoir les moyens d'une R&amp;D interne. C'est ici que se situe l'opportunité.</li><li><strong>Les très petits cabinets et experts indépendants</strong> — sensibles au prix, faible capacité d'adoption, cycle de vente long. Segment à éviter en amorçage.</li><li><strong>Les cabinets 100 % en ligne</strong> (Dougs, Keobiz, L-Expert-Comptable.com, Ça Compte Pour Moi, Clémentine, ComptaStar) — machines industrialisées, positionnées prix et rapidité.</li></ul>
+<h3>3.3 Les trois forces qui structurent la niche en 2026</h3>
+<p><strong>Force 1 — La pénurie de main-d'œuvre transforme l'automatisation en nécessité de survie.</strong></p>
+<p>Ce n'est plus un sujet de productivité mais de capacité à honorer le portefeuille. Un cabinet qui ne peut pas recruter et ne peut pas automatiser doit refuser des clients. C'est l'argument de vente le plus puissant du produit — plus fort que « gagnez du temps » : <strong>« prenez 20 % de dossiers en plus sans recruter »</strong>.</p>
+<p><strong>Force 2 — La réforme de la facturation électronique redessine les flux (échéance 1er sept. 2026).</strong></p>
+<p>Réception obligatoire pour toutes les entreprises au 1er septembre 2026, émission obligatoire pour grandes entreprises et ETI à la même date, PME et micro-entreprises au 1er septembre 2027. Formats structurés ou hybrides (Factur-X, UBL, CII), transit obligatoire par une PDP immatriculée DGFiP. Sanctions : 15 € par facture non conforme, plafonnées à 15 000 €/an.</p>
+<p><em>Conséquence produit majeure et contre-intuitive :</em> à mesure que les factures deviennent structurées, <strong>la valeur de l'OCR s'effondre</strong>. Un produit dont la promesse centrale est « je lis vos factures » sera obsolète en 24 à 36 mois. <strong>La valeur se déplace vers ce qui reste non structuré : la conversation client, les justificatifs hors facture, les pièces juridiques, le conseil.</strong> C'est une confirmation forte de la stratégie de différenciation retenue au §8.</p>
+<p><strong>Force 3 — Le marché logiciel est déjà consolidé et sur-capitalisé.</strong></p>
+<p>Pennylane (3,5 Md€ de valorisation, janvier 2026), l'écosystème Dext + Cegid Loop/Pulse devenu standard, Inqom, MyUnisoft, Tiime. Toute tentative de concurrence frontale sur la production comptable est perdue d'avance. <strong>Le produit doit se positionner en surcouche, pas en remplacement.</strong></p>
+<h3>3.4 Nature du marché : B2B et B2B2C</h3>
+<p>Le projet est structurellement <strong>B2B2C</strong> :</p>
+<ul><li><strong>AMRW / ECACY → cabinets</strong> (B2B) : cycle de vente long, décideur = associé, critères = conformité, sécurité, intégration au logiciel existant, ROI démontré, réversibilité.</li><li><strong>Cabinets → dirigeants clients</strong> (B2C professionnel) : l'utilisateur final juge sur la réactivité, la simplicité, l'absence de friction.</li></ul>
+<p><strong>Implication de conception :</strong> le produit doit satisfaire deux acheteurs aux critères opposés. L'associé veut du contrôle, de la traçabilité et de la conformité. Le dirigeant veut de la fluidité et de l'instantanéité. Un produit qui n'optimise que l'un des deux échoue. Le point différenciant retenu (§8) a précisément la propriété de servir les deux simultanément.</p>
+<h3>3.5 Attentes utilisateurs et irritants</h3>
+<p><strong>Côté dirigeant client</strong></p>
+<div class="tw"><table><thead><tr><th class="a-l">Attente</th><th class="a-l">Irritant actuel</th></tr></thead><tbody><tr><td class="a-l">Savoir quoi envoyer, quand</td><td class="a-l">Relances par e-mail répétitives, listes de pièces incompréhensibles</td></tr><tr><td class="a-l">Réponse rapide à une question simple</td><td class="a-l">Délais de réponse de plusieurs jours, interlocuteur injoignable</td></tr><tr><td class="a-l">Obtenir un document administratif vite</td><td class="a-l">2 à 10 jours pour une attestation, alors que la banque la demande sous 48 h</td></tr><tr><td class="a-l">Comprendre sa situation</td><td class="a-l">Reçoit un bilan 6 mois après la clôture, illisible</td></tr><tr><td class="a-l">Continuité de l'interlocuteur</td><td class="a-l">Rotation des collaborateurs, ré-explication permanente du dossier</td></tr></tbody></table></div>
+<p><strong>Côté collaborateur de cabinet</strong></p>
+<div class="tw"><table><thead><tr><th class="a-l">Attente</th><th class="a-l">Irritant actuel</th></tr></thead><tbody><tr><td class="a-l">Se concentrer sur le métier</td><td class="a-l">40 à 60 % du temps en saisie, relance et tâches administratives</td></tr><tr><td class="a-l">Ne pas être interrompu</td><td class="a-l">Téléphone entrant permanent, e-mails non qualifiés</td></tr><tr><td class="a-l">Ne pas refaire dix fois le même document</td><td class="a-l">Les 20 documents types d'ECACY, produits manuellement, à partir de modèles Word</td></tr><tr><td class="a-l">Dossiers propres à la clôture</td><td class="a-l">Course aux pièces manquantes en fin d'exercice</td></tr></tbody></table></div>
+<p><strong>Côté associé / dirigeant de cabinet</strong></p>
+<div class="tw"><table><thead><tr><th class="a-l">Attente</th><th class="a-l">Irritant actuel</th></tr></thead><tbody><tr><td class="a-l">Croître sans recruter</td><td class="a-l">Impossible : pénurie et délais de 14 semaines</td></tr><tr><td class="a-l">Vendre du conseil</td><td class="a-l">Les équipes n'ont pas le temps ; le conseil n'est pas facturé</td></tr><tr><td class="a-l">Maîtriser le risque</td><td class="a-l">Peur de l'IA : secret professionnel, responsabilité, hallucinations</td></tr><tr><td class="a-l">Rester conforme</td><td class="a-l">Réforme e-invoicing, AI Act, RGPD, déontologie</td></tr></tbody></table></div>
+<h3>3.6 Freins à l'achat (à traiter explicitement dans le produit et dans le discours commercial)</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Frein</th><th class="a-l">Intensité</th><th class="a-l">Réponse à intégrer au produit</th></tr></thead><tbody><tr><td class="a-l">Secret professionnel : « où vont mes données ? »</td><td class="a-l"><strong>Très forte</strong></td><td class="a-l">Hébergement UE, DPA, chiffrement, engagement contractuel de non-entraînement, journal d'accès</td></tr><tr><td class="a-l">Responsabilité : « si l'IA se trompe, qui signe ? »</td><td class="a-l"><strong>Très forte</strong></td><td class="a-l">Validation humaine obligatoire, journal d'audit opposable, aucune signature automatique</td></tr><tr><td class="a-l">Coût de changement : « je viens d'investir dans mon logiciel »</td><td class="a-l">Forte</td><td class="a-l">Positionnement en surcouche non substitutive, connecteurs</td></tr><tr><td class="a-l">Charge de conduite du changement</td><td class="a-l">Forte</td><td class="a-l">Onboarding accompagné, déploiement progressif par usage</td></tr><tr><td class="a-l">Scepticisme post-hype IA</td><td class="a-l">Moyenne</td><td class="a-l">Démonstration sur données réelles du cabinet, pas de démo générique</td></tr><tr><td class="a-l">Réversibilité et dépendance à l'éditeur</td><td class="a-l">Moyenne</td><td class="a-l">Export complet des données garanti contractuellement</td></tr></tbody></table></div>
+<h3>3.7 Contraintes métier, réglementaires et opérationnelles</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Domaine</th><th class="a-l">Contrainte</th><th class="a-l">Impact produit</th></tr></thead><tbody><tr><td class="a-l">Déontologie</td><td class="a-l">Décret n° 2012-432 : compétence, indépendance, probité, <strong>secret professionnel</strong>, loyauté</td><td class="a-l">Interdit l'usage d'IA grand public sur données clients identifiantes ; impose DPA et politique d'usage</td></tr><tr><td class="a-l">Responsabilité</td><td class="a-l">Bilan, liasse fiscale, dépôt au greffe engagent la responsabilité de l'expert-comptable inscrit</td><td class="a-l">Aucune production automatique sans validation nominative tracée</td></tr><tr><td class="a-l">RGPD</td><td class="a-l">Données personnelles (dirigeants, salariés si social), sous-traitance, transferts hors UE</td><td class="a-l">DPA, registre, hébergement UE, gestion des durées de conservation</td></tr><tr><td class="a-l">AI Act</td><td class="a-l">Application août 2026</td><td class="a-l">Transparence sur l'usage d'IA, information de l'utilisateur, documentation du système</td></tr><tr><td class="a-l">Facturation électronique</td><td class="a-l">Réception obligatoire 1er sept. 2026</td><td class="a-l">Le produit doit s'articuler avec une PDP, pas la concurrencer</td></tr><tr><td class="a-l">Conservation</td><td class="a-l">Pièces comptables : 10 ans</td><td class="a-l">Archivage à valeur probante, coût de stockage à modéliser</td></tr><tr><td class="a-l">LCB-FT</td><td class="a-l">Obligations de vigilance</td><td class="a-l">Impacte l'onboarding client, à ne pas automatiser aveuglément</td></tr></tbody></table></div>
+<hr>
+<h2 id="4-tendances-de-marche">4. TENDANCES DE MARCHÉ</h2>
+<div class="tw"><table><thead><tr><th class="a-l">#</th><th class="a-l">Tendance</th><th class="a-l">Description</th><th class="a-l">Implication pour le projet</th></tr></thead><tbody><tr><td class="a-l">T1</td><td class="a-l"><strong>Effondrement de la valeur de l'OCR</strong></td><td class="a-l">La normalisation Factur-X/UBL/CII rend l'extraction triviale sur les factures</td><td class="a-l">Ne pas construire la proposition de valeur sur l'OCR. La bâtir sur le non structuré : voix, e-mail, justificatifs, juridique</td></tr><tr><td class="a-l">T2</td><td class="a-l"><strong>Déplacement de la valeur vers la relation</strong></td><td class="a-l">Tous les cabinets auront la même donnée structurée ; la différence se fera sur le service</td><td class="a-l">Valide le pari « assistant conversationnel + guichet documentaire »</td></tr><tr><td class="a-l">T3</td><td class="a-l"><strong>Plateformisation</strong></td><td class="a-l">Pennylane, Inqom : de la pièce au bilan dans une seule interface</td><td class="a-l">Se positionner en surcouche interopérable, pas en concurrent</td></tr><tr><td class="a-l">T4</td><td class="a-l"><strong>Écosystème de briques spécialisées</strong></td><td class="a-l">Dext alimente Cegid ; les cabinets assemblent des outils</td><td class="a-l">Le produit peut être une brique de plus — mais doit alors être excellent sur un usage précis</td></tr><tr><td class="a-l">T5</td><td class="a-l"><strong>Maturité de l'IA vocale</strong></td><td class="a-l">Coût descendu à 0,07-0,15 $/min tout compris ; qualité conversationnelle FR acceptable</td><td class="a-l">Techniquement faisable en 2026 — mais coût variable à modéliser</td></tr><tr><td class="a-l">T6</td><td class="a-l"><strong>Pénurie durable de talents</strong></td><td class="a-l">Structurelle, non conjoncturelle</td><td class="a-l">Argument de vente n°1 : capacité, pas productivité</td></tr><tr><td class="a-l">T7</td><td class="a-l"><strong>Montée de l'exigence de conformité IA</strong></td><td class="a-l">AI Act, doctrine de l'Ordre, sensibilité au secret professionnel</td><td class="a-l">La conformité devient un argument commercial, pas une contrainte</td></tr><tr><td class="a-l">T8</td><td class="a-l"><strong>Glissement du modèle économique des cabinets</strong></td><td class="a-l">De l'honoraire à la mission de tenue vers l'abonnement au conseil</td><td class="a-l">Le tableau de bord dirigeant devient un support de vente de conseil</td></tr><tr><td class="a-l">T9</td><td class="a-l"><strong>Pression tarifaire par le bas</strong></td><td class="a-l">Cabinets en ligne à 39-89 €/mois</td><td class="a-l">Interdit à ECACY de se battre sur le prix ; impose le premium</td></tr><tr><td class="a-l">T10</td><td class="a-l"><strong>Consolidation et hausse des prix éditeurs</strong></td><td class="a-l">Hausses tarifaires constatées, recherche d'alternatives par les cabinets</td><td class="a-l">Fenêtre d'opportunité pour une offre complémentaire à prix contenu</td></tr></tbody></table></div>
+<hr>
+<h2 id="5-benchmark-concurrentiel">5. BENCHMARK CONCURRENTIEL</h2>
+<h3>5.1 Cartographie</h3>
+<p>Le projet ECACY se situe à l'intersection de quatre catégories qui ne se recouvrent pas. Aucun acteur n'occupe le centre.</p>
+<pre class="ascii">                    PRODUCTION COMPTABLE
+                  (Pennylane, Cegid, Inqom,
+                   MyUnisoft, ACD, Tiime)
+                            |
+   RELATION CLIENT ---------+--------- CAPTURE / OCR
+  (Call&amp;Co, callbots,       |          (Dext, ODC,
+   agences IA vocale)       |           natif plateformes)
+                            |
+                    JURIDIQUE / ACTES
+                 (ImpalAct, Clementine, LegalPlace)
+
+              ↑ ZONE VIDE = positionnement ECACY :
+        relation client entrante + production documentaire
+              à la demande, adossées au dossier comptable</pre>
+<h3>5.2 Concurrents directs — cabinets en ligne (concurrents d'ECACY en tant que cabinet)</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Acteur</th><th class="a-l">Positionnement</th><th class="a-l">Cible</th><th class="a-l">Promesse</th><th class="a-l">Prix constaté 2026</th><th class="a-l">Points forts</th><th class="a-l">Points faibles</th><th class="a-l">Limite non résolue</th></tr></thead><tbody><tr><td class="a-l"><strong>Dougs</strong></td><td class="a-l">Leader volume, rapport qualité/prix</td><td class="a-l">TPE, indépendants, SCI</td><td class="a-l">Compta automatisée + accompagnement</td><td class="a-l">à partir de <strong>49 €/mois</strong></td><td class="a-l">Automatisation bancaire mature, marque forte, prix</td><td class="a-l"><strong>Pool d'experts en chat, pas d'interlocuteur dédié</strong></td><td class="a-l">Personne ne connaît le dossier ; conseil générique</td></tr><tr><td class="a-l"><strong>Keobiz</strong></td><td class="a-l">Milieu de gamme, comptable dédié</td><td class="a-l">TPE/PME</td><td class="a-l">Comptable dédié + appli</td><td class="a-l">à partir de <strong>89 € HT/mois</strong></td><td class="a-l">Interlocuteur dédié, notoriété</td><td class="a-l">Réactivité inégale, standardisation</td><td class="a-l">Le dédié n'est dédié qu'en théorie à volume élevé</td></tr><tr><td class="a-l"><strong>Ça Compte Pour Moi</strong></td><td class="a-l">Premium relationnel</td><td class="a-l">TPE/PME</td><td class="a-l">Interlocuteur dédié, accompagnement</td><td class="a-l"><strong>79 €/mois</strong></td><td class="a-l">Qualité relationnelle perçue</td><td class="a-l">Moins automatisé, prix supérieur</td><td class="a-l">Le relationnel ne scale pas sans IA</td></tr><tr><td class="a-l"><strong>L-Expert-Comptable.com</strong></td><td class="a-l">Entrée de gamme volume</td><td class="a-l">Créateurs, TPE</td><td class="a-l">Prix plancher + création d'entreprise</td><td class="a-l">à partir de <strong>39 € HT/mois</strong></td><td class="a-l">Acquisition SEO massive, prix</td><td class="a-l">Service standardisé</td><td class="a-l">Service minimum</td></tr><tr><td class="a-l"><strong>Clémentine</strong></td><td class="a-l">Digital + juridique intégré</td><td class="a-l">TPE/PME</td><td class="a-l">Compta + secrétariat juridique</td><td class="a-l">Sur devis</td><td class="a-l"><strong>Intègre la production des PV d'AG</strong></td><td class="a-l">Périmètre restreint</td><td class="a-l">Juridique traité en mission, pas en libre-service instantané</td></tr><tr><td class="a-l"><strong>ComptaStar</strong></td><td class="a-l">Niche patrimoniale</td><td class="a-l">SCI, LMNP</td><td class="a-l">Prix réduit sur niches</td><td class="a-l">Bas</td><td class="a-l">Spécialisation</td><td class="a-l">Périmètre étroit</td><td class="a-l">—</td></tr></tbody></table></div>
+<p><strong>Lecture stratégique :</strong> ces acteurs se sont différenciés par le prix, la digitalisation et la rapidité — analyse que le client fait lui-même, et qui est juste. Le plancher est à 39-49 €/mois. <strong>ECACY ne peut pas gagner sur ce terrain et ne doit pas essayer.</strong> En revanche, tous partagent la même faiblesse : <strong>personne ne garantit un délai sur une demande ponctuelle non planifiée</strong> (attestation, question urgente, document pour la banque). C'est l'angle mort commun.</p>
+<h3>5.3 Concurrents indirects — plateformes logicielles (concurrents du produit revendu)</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Acteur</th><th class="a-l">Positionnement</th><th class="a-l">Cible</th><th class="a-l">Promesse</th><th class="a-l">Modèle économique</th><th class="a-l">Points forts</th><th class="a-l">Points faibles</th><th class="a-l">Opportunité à exploiter</th></tr></thead><tbody><tr><td class="a-l"><strong>Pennylane</strong></td><td class="a-l">Plateforme unifiée pièce → bilan</td><td class="a-l">Cabinets <strong>et</strong> entreprises</td><td class="a-l">Collaboration native cabinet-client</td><td class="a-l">Abonnement par entreprise : 14 € (indép. basique), 24 € (indép. essentiel), 49 € (entreprise basique), 99 € (entreprise essentiel) ; 79 à 298 €/mois selon nb d'utilisateurs</td><td class="a-l">Couverture la plus aboutie, collaboration éprouvée, 3,5 Md€ de valorisation</td><td class="a-l">Coût croissant (hausses tarifaires 2025-2026 documentées), dépendance forte</td><td class="a-l"><strong>Ne traite pas les appels entrants ni la production d'attestations</strong></td></tr><tr><td class="a-l"><strong>Inqom</strong></td><td class="a-l">Production industrialisée orientée cabinet</td><td class="a-l">Cabinets</td><td class="a-l">Industrialiser la production</td><td class="a-l">Sur devis, par dossier/collaborateur</td><td class="a-l">Conçu pour le cabinet, automatisation de production</td><td class="a-l">Volet client asymétrique, UX dirigeant faible</td><td class="a-l"><strong>L'expérience du dirigeant final est le point faible</strong></td></tr><tr><td class="a-l"><strong>Cegid Loop / Pulse</strong></td><td class="a-l">Standard de production</td><td class="a-l">Cabinets</td><td class="a-l">Production native + écosystème</td><td class="a-l">Licence/abonnement, sur devis</td><td class="a-l">Standard de marché avec Dext, robustesse</td><td class="a-l">Lourdeur, UX datée, coût</td><td class="a-l">Surcouche relationnelle absente</td></tr><tr><td class="a-l"><strong>MyUnisoft</strong></td><td class="a-l">Alternative française, portée par l'écosystème Ordre</td><td class="a-l">Cabinets</td><td class="a-l">Production moderne, données partagées</td><td class="a-l">Abonnement</td><td class="a-l">Ancrage profession, ouverture API</td><td class="a-l">Écosystème plus jeune</td><td class="a-l">Partenariat possible plutôt que concurrence</td></tr><tr><td class="a-l"><strong>Tiime</strong></td><td class="a-l">Gratuit / freemium, très accessible</td><td class="a-l">Freelances, professions libérales, cabinets partenaires</td><td class="a-l">Simplicité, prise en main immédiate</td><td class="a-l">Freemium + facturation cabinet</td><td class="a-l">Version gratuite fonctionnelle, UX</td><td class="a-l">Périmètre limité au petit dossier</td><td class="a-l">—</td></tr><tr><td class="a-l"><strong>Dext</strong></td><td class="a-l">Capture et pré-comptabilisation</td><td class="a-l">Cabinets</td><td class="a-l">OCR spécialisé, alimente le logiciel de prod</td><td class="a-l">Abonnement par client</td><td class="a-l">Spécialiste, standard de fait</td><td class="a-l"><strong>Menacé par la normalisation e-invoicing (T1)</strong></td><td class="a-l">Fenêtre pour un produit qui ne parie pas sur l'OCR</td></tr><tr><td class="a-l"><strong>Fulll, ACD, Sage</strong></td><td class="a-l">Production traditionnelle</td><td class="a-l">Cabinets</td><td class="a-l">Continuité de l'existant</td><td class="a-l">Licence</td><td class="a-l">Base installée</td><td class="a-l">Innovation plus lente</td><td class="a-l">Base installée = cible du produit revendu</td></tr></tbody></table></div>
+<h3>5.4 Concurrents indirects — relation client et IA vocale</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Acteur</th><th class="a-l">Positionnement</th><th class="a-l">Promesse</th><th class="a-l">Modèle</th><th class="a-l">Points forts</th><th class="a-l">Points faibles</th><th class="a-l">Limite non résolue</th></tr></thead><tbody><tr><td class="a-l"><strong>Call and Co</strong></td><td class="a-l">Télésecrétariat spécialisé experts-comptables + agent IA</td><td class="a-l">Filtrage et routage d'appels, qualification, réponse aux questions courantes</td><td class="a-l">Abonnement / à l'appel</td><td class="a-l">Connaissance métier, offre déjà positionnée sur la cible</td><td class="a-l"><strong>Ne connaît pas le dossier comptable</strong> : filtre, ne résout pas</td><td class="a-l">L'appel est routé, pas traité au fond</td></tr><tr><td class="a-l"><strong>Agences IA vocale génériques</strong> (Nerolia, Vokai, Bonjour IA, Agence IA…)</td><td class="a-l">Callbots sur mesure PME/TPE</td><td class="a-l">Standard 24/7, prise de RDV, FAQ</td><td class="a-l">Setup + abonnement + à la minute</td><td class="a-l">Rapidité de déploiement</td><td class="a-l"><strong>Aucune intégration au métier comptable</strong>, pas d'accès aux données du dossier</td><td class="a-l">Un callbot qui ne peut pas répondre « avez-vous payé votre TVA ? »</td></tr><tr><td class="a-l"><strong>Télésecrétariat humain classique</strong></td><td class="a-l">Externalisation d'accueil</td><td class="a-l">Décrocher au nom du cabinet</td><td class="a-l">À l'appel / forfait</td><td class="a-l">Qualité humaine</td><td class="a-l">Coût, pas de résolution métier</td><td class="a-l">Idem</td></tr></tbody></table></div>
+<p><strong>Lecture stratégique :</strong> l'IA vocale existe, elle est mature et peu chère. <strong>Ce qui n'existe pas, c'est un agent vocal branché sur le dossier comptable du client</strong>, capable de répondre au fond et de déclencher une action (générer une attestation, réclamer une pièce, planifier un RDV avec le bon collaborateur). C'est la barrière : elle n'est pas technologique sur la voix, elle est dans l'intégration métier et la donnée.</p>
+<h3>5.5 Concurrents indirects — production juridique et documentaire</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Acteur</th><th class="a-l">Positionnement</th><th class="a-l">Promesse</th><th class="a-l">Points forts</th><th class="a-l">Points faibles</th><th class="a-l">Limite non résolue</th></tr></thead><tbody><tr><td class="a-l"><strong>ImpalAct</strong></td><td class="a-l">Logiciel de secrétariat juridique</td><td class="a-l">Génération de tous les documents du droit des sociétés (statuts, AGO/AGE, décisions d'associé unique) prêts à signer, en HTML/Word/PDF</td><td class="a-l">Couverture juridique complète, documents finalisés</td><td class="a-l"><strong>Outil de juriste, en silo</strong> : ne connaît pas les données comptables, pas déclenché par le client, saisie manuelle des données</td><td class="a-l">La donnée comptable doit être re-saisie ; le délai reste celui du collaborateur</td></tr><tr><td class="a-l"><strong>Clémentine (volet juridique)</strong></td><td class="a-l">Service intégré au cabinet en ligne</td><td class="a-l">Rédaction et publication du PV d'AG post-liasse</td><td class="a-l">Enchaînement liasse → PV</td><td class="a-l">Périmètre limité au PV d'AG annuel</td><td class="a-l">Ne couvre pas les demandes ponctuelles (attestations)</td></tr><tr><td class="a-l"><strong>Indy</strong></td><td class="a-l">Compta indépendants</td><td class="a-l">Génération de PV d'AG en quelques clics</td><td class="a-l">Simplicité</td><td class="a-l">Périmètre TPE/indépendants uniquement</td><td class="a-l">Ne couvre pas les attestations cabinet</td></tr><tr><td class="a-l"><strong>LegalPlace, Advyse</strong></td><td class="a-l">Modèles en ligne</td><td class="a-l">Modèles PDF gratuits ou payants</td><td class="a-l">Accessibilité</td><td class="a-l"><strong>Modèles vierges</strong> : aucune donnée pré-remplie, aucune validation experte</td><td class="a-l">Reporte 100 % du travail sur l'utilisateur</td></tr><tr><td class="a-l"><strong>Statu quo : Word + modèles internes</strong></td><td class="a-l">—</td><td class="a-l">—</td><td class="a-l">Coût nul</td><td class="a-l">Chronophage, source d'erreurs, non tracé</td><td class="a-l"><strong>C'est la solution actuelle d'ECACY — et de la majorité du marché</strong></td></tr></tbody></table></div>
+<p><strong>Constat déterminant :</strong> aucune solution ne relie <strong>la demande du client</strong> (souvent formulée par téléphone ou e-mail), <strong>la donnée comptable du dossier</strong>, <strong>la génération du document conforme</strong>, <strong>la validation de l'expert-comptable</strong> et <strong>la signature électronique</strong> dans un flux unique. Chaque acteur ne couvre qu'un maillon. C'est la fondation du point différenciant du §8.</p>
+<h3>5.6 Solutions de contournement observées</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Contournement</th><th class="a-l">Qui l'utilise</th><th class="a-l">Coût caché</th></tr></thead><tbody><tr><td class="a-l">Modèles Word + copier-coller depuis le logiciel de prod</td><td class="a-l">La majorité des cabinets, dont ECACY</td><td class="a-l">15 à 45 min par document, erreurs de report, aucune traçabilité</td></tr><tr><td class="a-l">Boîte mail partagée « compta@ »</td><td class="a-l">Quasi-universel</td><td class="a-l">Perte de demandes, pas de SLA, pas d'historique par dossier</td></tr><tr><td class="a-l">Relances manuelles par e-mail avant clôture</td><td class="a-l">Universel</td><td class="a-l">Plusieurs jours-collaborateur par exercice</td></tr><tr><td class="a-l">Dropbox / Drive partagé pour les pièces</td><td class="a-l">Fréquent</td><td class="a-l">Aucun contrôle de complétude, risque RGPD</td></tr><tr><td class="a-l">Télésecrétariat externe</td><td class="a-l">Cabinets de taille moyenne</td><td class="a-l">300 à 900 €/mois, sans résolution métier</td></tr><tr><td class="a-l">ChatGPT en usage individuel non encadré</td><td class="a-l"><strong>Très répandu et non déclaré</strong></td><td class="a-l"><strong>Risque déontologique majeur : violation potentielle du secret professionnel</strong></td></tr></tbody></table></div>
+<p>Ce dernier point est une <strong>opportunité commerciale directe</strong> : proposer au cabinet un environnement IA conforme et cadré, c'est répondre à un risque que les associés savent déjà présent dans leurs équipes sans savoir comment le maîtriser.</p>
+<h3>5.7 Références inspirantes (hors secteur ou international)</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Référence</th><th class="a-l">Ce qu'il faut en retenir</th></tr></thead><tbody><tr><td class="a-l"><strong>Qonto / Regate</strong></td><td class="a-l">Fusion banque + pré-compta : la valeur naît de la jonction entre deux univers de données, pas de la profondeur d'un seul</td></tr><tr><td class="a-l"><strong>Alan (assurance santé)</strong></td><td class="a-l">Preuve qu'un acteur peut vendre du premium sur un marché commoditisé, uniquement par la réactivité et la clarté du service</td></tr><tr><td class="a-l"><strong>Doctolib</strong></td><td class="a-l">Le service à valeur n'est pas la fonctionnalité mais <strong>la suppression d'une friction d'accès</strong>. Modèle direct pour le « guichet attestations »</td></tr><tr><td class="a-l"><strong>Intuit (QuickBooks Live, US)</strong></td><td class="a-l">Le modèle « logiciel + humain assisté par IA » est validé à grande échelle sur le marché américain</td></tr><tr><td class="a-l"><strong>Karbon, Canopy (US/UK)</strong></td><td class="a-l"><em>Practice management</em> pour cabinets : gestion des demandes clients, workflows, SLA. <strong>Catégorie très peu développée en France — angle mort du marché français</strong></td></tr><tr><td class="a-l"><strong>Ramp, Brex</strong></td><td class="a-l">La détection proactive d'anomalies et d'opportunités est devenue un standard d'attente côté dirigeant</td></tr></tbody></table></div>
+<hr>
+<h2 id="6-problemes-observes-sur-le-marche">6. PROBLÈMES OBSERVÉS SUR LE MARCHÉ</h2>
+<p>Chaque problème est codé (P1…P12), qualifié, et sera relié à une solution au §7.</p>
+<hr>
+<p><strong>P1 — L'appel entrant détruit la productivité du cabinet et ne sert pas le client</strong></p>
+<ul><li><em>Qui est impacté :</em> collaborateurs (interruptions permanentes), dirigeants clients (personne ne décroche, rappel tardif).</li><li><em>Pourquoi ça persiste :</em> le standard humain coûte cher, le télésecrétariat filtre sans résoudre, les callbots génériques ne connaissent pas le dossier.</li><li><em>Conséquences :</em> perte de temps de production, dégradation de la satisfaction, image de cabinet injoignable.</li><li><em>Réponse actuelle du marché :</em> <strong>partielle et coûteuse.</strong> Call and Co et les callbots routent et qualifient, mais ne répondent pas au fond, faute d'accès aux données comptables.</li><li><em>Gravité :</em> <strong>Critique</strong></li></ul>
+<hr>
+<p><strong>P2 — La chasse aux pièces manquantes est le premier poste de temps improductif</strong></p>
+<ul><li><em>Qui :</em> collaborateurs (relances répétées), clients (culpabilisés, ne savent pas quoi envoyer).</li><li><em>Pourquoi :</em> le client ne sait pas ce qui manque ; le cabinet ne le sait qu'en fin de traitement ; les relances sont manuelles ou génériques.</li><li><em>Conséquences :</em> clôtures en urgence, qualité dégradée, tension relationnelle, retards de dépôt.</li><li><em>Réponse actuelle :</em> <strong>partielle.</strong> Pennylane, Dext, Inqom relancent, mais par listes génériques par e-mail, sans canal préféré du client, sans contexte conversationnel, sans escalade intelligente.</li><li><em>Gravité :</em> <strong>Critique</strong></li></ul>
+<hr>
+<p><strong>P3 — Les demandes d'attestations et d'actes répétitifs mobilisent des ressources qualifiées pour un travail de recopie</strong></p>
+<ul><li><em>Qui :</em> collaborateurs et experts-comptables, clients en attente.</li><li><em>Pourquoi :</em> chaque document (attestation de CA, de régularité fiscale et sociale, de rémunération, PV d'AGE, procuration, attestation de domiciliation, liste des souscripteurs, statuts…) suppose de retrouver la donnée dans le logiciel, l'insérer dans un modèle Word, faire relire, signer et envoyer. <strong>Aucun outil ne relie la demande, la donnée comptable et le document.</strong></li><li><em>Conséquences :</em> 15 à 45 minutes par document, délais de 2 à 10 jours, risque d'erreur de report, aucune traçabilité de qui a signé quoi, et <strong>une prestation généralement non facturée</strong>.</li><li><em>Réponse actuelle :</em> <strong>mauvaise.</strong> ImpalAct est un silo juridique sans donnée comptable ; LegalPlace fournit des modèles vierges ; Clémentine ne couvre que le PV d'AG annuel ; la majorité du marché est sous Word.</li><li><em>Gravité :</em> <strong>Critique — et c'est le problème le plus mal traité du marché.</strong></li></ul>
+<hr>
+<p><strong>P4 — Le conseil est réactif, jamais proactif</strong></p>
+<ul><li><em>Qui :</em> dirigeants (découvrent les problèmes trop tard), cabinets (ne facturent pas de conseil).</li><li><em>Pourquoi :</em> la donnée est là mais personne n'a le temps de l'analyser dossier par dossier ; les alertes ne sont pas systématisées.</li><li><em>Conséquences :</em> trésorerie tendue non anticipée, seuils fiscaux franchis par inadvertance, opportunités manquées ; côté cabinet, une source de revenus non exploitée.</li><li><em>Réponse actuelle :</em> <strong>quasi inexistante en France.</strong> Les tableaux de bord existent, les alertes actionnables et priorisées non.</li><li><em>Gravité :</em> <strong>Important</strong></li></ul>
+<hr>
+<p><strong>P5 — Le cabinet ne peut plus recruter pour absorber sa croissance</strong></p>
+<ul><li><em>Qui :</em> associés, collaborateurs en surcharge.</li><li><em>Pourquoi :</em> pénurie structurelle (30 000 besoins pour 10-15 000 profils), délais de 14 semaines, concurrence des entreprises.</li><li><em>Conséquences :</em> refus de dossiers, burnout, turnover, perte de marge.</li><li><em>Réponse actuelle :</em> <strong>absente.</strong> Aucun outil ne se vend explicitement comme « capacité de production supplémentaire ».</li><li><em>Gravité :</em> <strong>Critique — c'est le levier de vente n°1.</strong></li></ul>
+<hr>
+<p><strong>P6 — L'usage non encadré de l'IA grand public crée un risque déontologique invisible</strong></p>
+<ul><li><em>Qui :</em> le cabinet et l'expert-comptable inscrit à l'Ordre.</li><li><em>Pourquoi :</em> les collaborateurs utilisent des IA publiques par gain de temps ; les données clients transitent chez des tiers ; les clauses autorisant l'entraînement rendent l'usage indéfendable au regard du secret professionnel (décret n° 2012-432).</li><li><em>Conséquences :</em> risque disciplinaire, risque RGPD, risque réputationnel — pour un bénéfice non capitalisé par le cabinet.</li><li><em>Réponse actuelle :</em> <strong>absente.</strong> Le marché vend des chartes IA et de la formation, pas un environnement conforme.</li><li><em>Gravité :</em> <strong>Important — et fort levier commercial.</strong></li></ul>
+<hr>
+<p><strong>P7 — L'IA ne peut pas porter la responsabilité, mais aucun outil ne le prouve</strong></p>
+<ul><li><em>Qui :</em> experts-comptables signataires.</li><li><em>Pourquoi :</em> bilan, liasse et dépôt engagent la responsabilité d'une personne physique inscrite ; aucune IA ne porte cette signature. Or les outils IA n'exposent ni leurs sources, ni leur chaîne de validation, ni un journal opposable.</li><li><em>Conséquences :</em> frein à l'adoption majeur ; l'associé refuse ce qu'il ne peut pas auditer.</li><li><em>Réponse actuelle :</em> <strong>mauvaise.</strong> Peu d'outils exposent un journal d'audit exploitable en cas de contestation.</li><li><em>Gravité :</em> <strong>Critique pour l'adoption</strong></li></ul>
+<hr>
+<p><strong>P8 — Le dirigeant reçoit de la comptabilité, pas de l'information de pilotage</strong></p>
+<ul><li><em>Qui :</em> dirigeants de TPE/PME.</li><li><em>Pourquoi :</em> les livrables sont conçus pour l'administration fiscale, pas pour la décision.</li><li><em>Conséquences :</em> le dirigeant ne perçoit pas la valeur du cabinet et arbitre alors sur le prix — ce qui alimente la guerre des prix.</li><li><em>Réponse actuelle :</em> <strong>partielle.</strong> Pennylane et Tiime proposent des tableaux de bord, souvent encore comptables dans leur logique (chiffres) plutôt que décisionnels (« combien puis-je me verser ? »).</li><li><em>Gravité :</em> <strong>Important</strong></li></ul>
+<hr>
+<p><strong>P9 — La relation client est éclatée entre canaux, sans historique unifié</strong></p>
+<ul><li><em>Qui :</em> collaborateurs, clients.</li><li><em>Pourquoi :</em> téléphone, e-mail, SMS, WhatsApp, portail : aucune consolidation. La connaissance du dossier est dans la tête du collaborateur.</li><li><em>Conséquences :</em> demandes perdues, redites, perte de mémoire à chaque départ de collaborateur — problème aggravé par le turnover.</li><li><em>Réponse actuelle :</em> <strong>absente en France.</strong> Le <em>practice management</em> (Karbon, Canopy aux US/UK) n'a pas d'équivalent français installé.</li><li><em>Gravité :</em> <strong>Important</strong></li></ul>
+<hr>
+<p><strong>P10 — La réforme de la facturation électronique arrive et les cabinets ne sont pas prêts</strong></p>
+<ul><li><em>Qui :</em> cabinets et leurs clients.</li><li><em>Pourquoi :</em> échéance au 1er septembre 2026 pour la réception (toutes entreprises), calendrier d'émission échelonné jusqu'en 2027 ; nécessité de choisir une PDP, de cartographier les clients, de former les équipes, de gérer les mandats « opt-in ».</li><li><em>Conséquences :</em> amendes (15 €/facture, plafond 15 000 €/an), désorganisation, surcharge de septembre.</li><li><em>Réponse actuelle :</em> <strong>en cours, mais le pilotage de la mise en conformité du portefeuille est peu outillé.</strong></li><li><em>Gravité :</em> <strong>Important et urgent — mais attention : le produit ne doit pas devenir une PDP</strong> (immatriculation DGFiP, hors périmètre et hors budget).</li></ul>
+<hr>
+<p><strong>P11 — Les cabinets de taille intermédiaire n'ont pas les moyens d'une R&amp;D interne</strong></p>
+<ul><li><em>Qui :</em> les 19 490 sociétés d'expertise comptable, majoritairement petites et moyennes.</li><li><em>Pourquoi :</em> pas d'équipe technique, pas de budget produit, dépendance à l'éditeur historique.</li><li><em>Conséquences :</em> décrochage face aux cabinets en ligne industrialisés.</li><li><em>Réponse actuelle :</em> <strong>le marché leur vend des logiciels, pas une capacité d'automatisation personnalisée à leurs process.</strong></li><li><em>Gravité :</em> <strong>Important — c'est la raison d'être du produit revendu (objectif B) et de l'offre de maintenance AMRW.</strong></li></ul>
+<hr>
+<p><strong>P12 — L'intégration aux logiciels de production est le point de rupture de tous les projets d'automatisation</strong></p>
+<ul><li><em>Qui :</em> tout éditeur de surcouche.</li><li><em>Pourquoi :</em> API absentes, partielles, payantes ou conditionnées à un partenariat ; formats d'écritures hétérogènes ; plans comptables propres à chaque dossier.</li><li><em>Conséquences :</em> promesses d'intégration non tenues, retour à l'export/import de fichiers, déception client.</li><li><em>Réponse actuelle :</em> <strong>structurellement mauvaise.</strong> C'est le risque n°1 du projet.</li><li><em>Gravité :</em> <strong>Critique (risque projet)</strong></li></ul>
+<hr>
+<h2 id="7-solutions-apportees-par-le-projet">7. SOLUTIONS APPORTÉES PAR LE PROJET</h2>
+<p>Chaque fonctionnalité est rattachée à un problème identifié. <strong>Aucune fonctionnalité sans problème.</strong></p>
+<div class="tw"><table><thead><tr><th class="a-l">Réf.</th><th class="a-l">Fonctionnalité</th><th class="a-l">Problème traité</th><th class="a-l">Logique métier</th><th class="a-l">Bénéfice utilisateur</th><th class="a-l">Bénéfice business</th><th class="a-l">Priorité</th></tr></thead><tbody><tr><td class="a-l"><strong>F1</strong></td><td class="a-l"><strong>Guichet Attestations &amp; Actes</strong> — génération assistée des 20+ documents répétitifs (attestation fiscale, URSSAF, CA, rémunération/non-rémunération, régularité fiscale et sociale, PV AGO/AGE, procuration, statuts, cession de titres, dissolution, liquidation, domiciliation, non-condamnation, liste des souscripteurs…) à partir des données du dossier, avec validation experte et signature électronique</td><td class="a-l"><strong>P3</strong></td><td class="a-l">Demande (portail/e-mail/voix) → identification du type → extraction des données du dossier → remplissage du modèle → contrôle de cohérence → file de validation expert → e-signature → délivrance + archivage</td><td class="a-l">Document obtenu en minutes, plus en jours</td><td class="a-l"><strong>Nouveau service facturable ; suppression de 15-45 min par document ; argument commercial n°1</strong></td><td class="a-l"><strong>Critique</strong></td></tr><tr><td class="a-l"><strong>F2</strong></td><td class="a-l"><strong>Collecte intelligente de pièces</strong> — détection des pièces manquantes, relance contextualisée sur le canal préféré du client, escalade progressive, suivi de complétude par dossier</td><td class="a-l"><strong>P2</strong></td><td class="a-l">Rapprochement attendu/reçu par dossier et par période → génération d'une demande nominative et compréhensible → relance graduée → alerte collaborateur si blocage</td><td class="a-l">Le client sait exactement quoi envoyer, quand</td><td class="a-l">Réduction majeure du temps de relance ; clôtures anticipées</td><td class="a-l"><strong>Critique</strong></td></tr><tr><td class="a-l"><strong>F3</strong></td><td class="a-l"><strong>Agent e-mail IA</strong> — lecture des e-mails entrants, classification, extraction des pièces jointes, rattachement au dossier, réponse de niveau 1, escalade</td><td class="a-l"><strong>P1, P9</strong></td><td class="a-l">Boîte dédiée → classification d'intention → action (rattacher, répondre, escalader) → tout est journalisé sur le dossier</td><td class="a-l">Réponse immédiate sur les demandes simples</td><td class="a-l">Désengorgement de la boîte partagée</td><td class="a-l"><strong>Critique</strong></td></tr><tr><td class="a-l"><strong>F4</strong></td><td class="a-l"><strong>Agent vocal IA 24/7</strong> — réception d'appel, identification de l'appelant, réponse sur le dossier (échéances, TVA, état d'avancement), déclenchement d'actions (F1, F2), prise de RDV, transfert qualifié</td><td class="a-l"><strong>P1, P5, P9</strong></td><td class="a-l">Téléphonie → identification → accès en lecture au contexte dossier → réponse ou action ou transfert → compte rendu écrit sur le dossier</td><td class="a-l">Ligne toujours joignable, réponse au fond</td><td class="a-l">Différenciation forte ; suppression du télésecrétariat ; capacité sans recrutement</td><td class="a-l"><strong>Important</strong> (P2 — sous réserve de l'économie unitaire, voir §15.2)</td></tr><tr><td class="a-l"><strong>F5</strong></td><td class="a-l"><strong>Ingestion et pré-comptabilisation</strong> — capture multi-source, OCR/extraction structurée, contrôles TVA, pré-affectation, détection de doublons et d'anomalies, proposition d'écriture soumise à validation</td><td class="a-l"><strong>P2</strong></td><td class="a-l">Pièce → extraction → contrôles de cohérence (montants, TVA, tiers) → proposition avec niveau de confiance → validation collaborateur → export vers le logiciel de production</td><td class="a-l">Moins de saisie, moins d'erreurs</td><td class="a-l">Gain de temps de production</td><td class="a-l"><strong>Important</strong> <em>(volontairement pas « critique » : c'est le terrain le plus concurrentiel et le plus menacé par T1)</em></td></tr><tr><td class="a-l"><strong>F6</strong></td><td class="a-l"><strong>Tableau de bord dirigeant</strong> — trésorerie disponible, impôts à venir, résultat estimé, capacité de rémunération, indicateurs clés</td><td class="a-l"><strong>P8</strong></td><td class="a-l">Agrégation des données comptables et bancaires → indicateurs décisionnels, pas comptables</td><td class="a-l">Comprendre sa situation sans être comptable</td><td class="a-l">Le client perçoit la valeur → défend le prix → réduit le churn</td><td class="a-l"><strong>Important</strong></td></tr><tr><td class="a-l"><strong>F7</strong></td><td class="a-l"><strong>Alertes proactives</strong> — baisse de marge, tension de trésorerie à 60 jours, TVA inhabituelle, dépenses personnelles récurrentes, franchissement de seuil, besoin d'embauche</td><td class="a-l"><strong>P4</strong></td><td class="a-l">Règles métier + détection d'écarts sur historique → alerte qualifiée → <strong>transformée en opportunité de mission côté cabinet</strong></td><td class="a-l">Anticipation au lieu de constat</td><td class="a-l"><strong>Génération de missions de conseil facturables</strong></td><td class="a-l"><strong>Important</strong></td></tr><tr><td class="a-l"><strong>F8</strong></td><td class="a-l"><strong>Console collaborateur unifiée</strong> — file de travail par exception, historique omnicanal par dossier, SLA, affectation, mémoire de dossier</td><td class="a-l"><strong>P9, P5, P7</strong></td><td class="a-l">Toutes les interactions (voix, e-mail, portail, WhatsApp) consolidées sur le dossier ; le collaborateur traite une file d'exceptions priorisées</td><td class="a-l">Fin de la dispersion ; onboarding rapide d'un nouveau collaborateur</td><td class="a-l">Résilience au turnover ; pilotage de la charge</td><td class="a-l"><strong>Critique</strong></td></tr><tr><td class="a-l"><strong>F9</strong></td><td class="a-l"><strong>Journal d'audit IA opposable</strong> — pour chaque action IA : source de la donnée, version du modèle et du modèle documentaire, validateur nominatif, horodatage, export</td><td class="a-l"><strong>P6, P7</strong></td><td class="a-l">Toute production IA est traçable, reproductible et exportable en cas de contrôle ou de contestation</td><td class="a-l">L'expert-comptable peut défendre son travail</td><td class="a-l"><strong>Lève le frein n°1 à l'adoption ; conformité AI Act et déontologie</strong></td><td class="a-l"><strong>Critique</strong></td></tr><tr><td class="a-l"><strong>F10</strong></td><td class="a-l"><strong>Environnement IA conforme</strong> — hébergement UE, chiffrement, DPA, engagement de non-entraînement, cloisonnement par cabinet, politique d'usage intégrée</td><td class="a-l"><strong>P6</strong></td><td class="a-l">Le cabinet dispose d'un cadre conforme au lieu d'un usage sauvage d'IA publique</td><td class="a-l">Sécurité juridique</td><td class="a-l">Argument de vente et condition d'entrée chez tout cabinet sérieux</td><td class="a-l"><strong>Critique</strong></td></tr><tr><td class="a-l"><strong>F11</strong></td><td class="a-l"><strong>Portail client web + mobile</strong> — dépôt de pièces, suivi de complétude, demandes de documents, messagerie, tableau de bord, échéancier</td><td class="a-l"><strong>P2, P8, P9</strong></td><td class="a-l">Point d'entrée unique côté dirigeant, cohérent avec les autres canaux</td><td class="a-l">Autonomie et clarté</td><td class="a-l">Réduction du volume d'appels et d'e-mails</td><td class="a-l"><strong>Critique</strong></td></tr><tr><td class="a-l"><strong>F12</strong></td><td class="a-l"><strong>Connecteurs logiciels de production</strong> — export/import d'écritures, synchronisation des dossiers et des tiers, via API ou fichiers normalisés</td><td class="a-l"><strong>P12</strong></td><td class="a-l">Adaptateur par éditeur, avec <strong>repli systématique sur import/export de fichiers</strong></td><td class="a-l">Pas de double saisie</td><td class="a-l">Condition de vente à tout cabinet équipé</td><td class="a-l"><strong>Critique</strong></td></tr><tr><td class="a-l"><strong>F13</strong></td><td class="a-l"><strong>Radar de conformité e-invoicing</strong> — cartographie du portefeuille, statut de raccordement PDP, suivi des mandats, alertes d'échéance</td><td class="a-l"><strong>P10</strong></td><td class="a-l">Suivi par dossier de l'état de conformité, sans devenir PDP</td><td class="a-l">Le cabinet pilote sa mise en conformité</td><td class="a-l">Argument d'actualité immédiate (échéance dans 5 semaines)</td><td class="a-l"><strong>Confort en P1, Important en P2</strong></td></tr><tr><td class="a-l"><strong>F14</strong></td><td class="a-l"><strong>Multi-tenant, marque blanche et provisioning</strong> — création d'un cabinet en autonomie, personnalisation de marque, des modèles documentaires et des règles</td><td class="a-l"><strong>P11</strong></td><td class="a-l">Socle mutualisé + couche de configuration par cabinet, sans fork de code</td><td class="a-l">Un cabinet est opérationnel en quelques jours</td><td class="a-l"><strong>Condition d'existence de l'objectif B</strong></td><td class="a-l"><strong>Critique en P3</strong></td></tr><tr><td class="a-l"><strong>F15</strong></td><td class="a-l"><strong>Back-office AMRW</strong> — supervision multi-cabinets, facturation des abonnements, suivi de consommation IA, supervision des incidents</td><td class="a-l"><strong>P11</strong></td><td class="a-l">Console d'éditeur</td><td class="a-l">—</td><td class="a-l"><strong>Condition de rentabilité du modèle SaaS</strong></td><td class="a-l"><strong>Critique en P3</strong></td></tr></tbody></table></div>
+<h3>7.1 Ce qui est explicitement hors périmètre</h3>
+<p>À poser clairement pour éviter les malentendus commerciaux :</p>
+<div class="tw"><table><thead><tr><th class="a-l">Exclusion</th><th class="a-l">Justification</th></tr></thead><tbody><tr><td class="a-l"><strong>Devenir une PDP immatriculée DGFiP</strong></td><td class="a-l">Immatriculation, audits, exigences techniques : projet à part entière, hors budget et hors compétence</td></tr><tr><td class="a-l"><strong>Remplacer le logiciel de production comptable</strong></td><td class="a-l">Bataille perdue face à Pennylane/Cegid/Inqom ; le produit est une surcouche</td></tr><tr><td class="a-l"><strong>Produire automatiquement liasse fiscale, bilan ou déclarations sans validation</strong></td><td class="a-l">Responsabilité légale de l'expert-comptable — interdit par construction</td></tr><tr><td class="a-l"><strong>Signature de documents par l'IA</strong></td><td class="a-l">Aucune IA ne peut porter la signature d'un expert-comptable inscrit</td></tr><tr><td class="a-l"><strong>Paie et social complet</strong></td><td class="a-l">Métier distinct (Silae et concurrents), périmètre à part</td></tr><tr><td class="a-l"><strong>Conseil en investissement ou juridique complexe</strong></td><td class="a-l">Hors périmètre déontologique de l'outil</td></tr></tbody></table></div>
+<hr>
+<h2 id="8-point-differenciant-majeur">8. POINT DIFFÉRENCIANT MAJEUR</h2>
+<h3>8.1 Différenciateur n°1 — Le « Guichet Attestations &amp; Actes en 15 minutes »</h3>
+<blockquote><strong>La promesse :</strong> <em>« Votre client demande une attestation par téléphone à 22 h. Elle est signée et dans sa boîte mail le lendemain à 9 h 15. »</em></blockquote>
+<p><strong>Le problème additionnel adressé</strong></p>
+<p>Les demandes de documents administratifs et juridiques ponctuels — attestation de chiffre d'affaires pour une banque, attestation de régularité fiscale et sociale pour un appel d'offres, attestation de rémunération pour un crédit immobilier, PV d'AGE pour une modification statutaire, attestation de domiciliation pour un bailleur — sont :</p>
+<ul><li><strong>massivement répétitives</strong> (ECACY en a lui-même listé 20 types),</li><li><strong>urgentes et anxiogènes côté client</strong> (elles conditionnent un prêt, un marché, un bail, un recrutement),</li><li><strong>chronophages et non valorisées côté cabinet</strong> (recopie manuelle, rarement facturée),</li><li><strong>et non couvertes par le marché.</strong></li></ul>
+<p><strong>Pourquoi le marché le traite mal</strong></p>
+<div class="tw"><table><thead><tr><th class="a-l">Acteur</th><th class="a-l">Ce qu'il fait</th><th class="a-l">Ce qui manque</th></tr></thead><tbody><tr><td class="a-l">Plateformes de production (Pennylane, Cegid, Inqom)</td><td class="a-l">Détiennent la donnée</td><td class="a-l">Ne produisent pas ces documents</td></tr><tr><td class="a-l">Logiciels juridiques (ImpalAct)</td><td class="a-l">Produisent les documents</td><td class="a-l">N'ont pas la donnée comptable, ne sont pas déclenchés par le client, restent en silo juriste</td></tr><tr><td class="a-l">Modèles en ligne (LegalPlace, Advyse)</td><td class="a-l">Fournissent le gabarit</td><td class="a-l">Aucune donnée, aucune validation experte, aucune valeur juridique garantie</td></tr><tr><td class="a-l">Cabinets en ligne</td><td class="a-l">Traitent le flux récurrent</td><td class="a-l">La demande ponctuelle sort du process industriel et retombe en traitement manuel</td></tr><tr><td class="a-l">Réalité du terrain</td><td class="a-l">Word + copier-coller</td><td class="a-l">Le problème entier</td></tr></tbody></table></div>
+<p>Le marché a segmenté selon sa propre logique d'outillage — production d'un côté, juridique de l'autre — alors que le client vit une seule expérience : <em>« j'ai besoin d'un papier, vite »</em>. <strong>Personne n'a construit le pont.</strong></p>
+<p><strong>La solution proposée</strong></p>
+<p>Un flux unique, de bout en bout :</p>
+<pre class="ascii">1. DEMANDE      Le client demande — par téléphone (F4), e-mail (F3), WhatsApp
+                ou portail (F11) : « il me faut une attestation de CA 2025 
+                pour ma banque »
+
+2. QUALIFICATION L'IA identifie le type de document, la période, le destinataire,
+                l'usage, et pose les questions manquantes en langage naturel
+
+3. COLLECTE     Récupération automatique des données dans le dossier comptable
+                (CA, résultat, rémunérations, dates, forme juridique, capital,
+                situation fiscale et sociale)
+
+4. CONTRÔLE     Vérification de cohérence et de disponibilité :
+                exercice clos ? liasse déposée ? données à jour ?
+                → si non, blocage explicite avec motif, jamais de production
+                  sur données incertaines
+
+5. GÉNÉRATION   Document conforme, pré-rempli, au format et à la charte du cabinet
+
+6. VALIDATION   File de validation de l'expert-comptable : diff visuel des champs,
+                sources affichées, validation ou correction en un clic
+                → ÉTAPE OBLIGATOIRE, JAMAIS CONTOURNÉE
+
+7. SIGNATURE    Signature électronique de l'expert-comptable
+
+8. DÉLIVRANCE   Envoi au client sur son canal, archivage horodaté au dossier,
+                journal d'audit complet (F9), facturation optionnelle de l'acte</pre>
+<p><strong>Impact attendu</strong></p>
+<div class="tw"><table><thead><tr><th class="a-l">Indicateur</th><th class="a-l">Avant</th><th class="a-l">Après (cible)</th></tr></thead><tbody><tr><td class="a-l">Délai de délivrance</td><td class="a-l">2 à 10 jours ouvrés</td><td class="a-l"><strong>&lt; 15 min ouvrées</strong> (temps de validation expert inclus)</td></tr><tr><td class="a-l">Temps collaborateur par document</td><td class="a-l">15 à 45 min</td><td class="a-l"><strong>&lt; 3 min</strong> (validation seule)</td></tr><tr><td class="a-l">Taux d'erreur de report</td><td class="a-l">Non mesuré, non nul</td><td class="a-l">Quasi nul (données sourcées)</td></tr><tr><td class="a-l">Traçabilité</td><td class="a-l">Aucune</td><td class="a-l">Journal d'audit complet</td></tr><tr><td class="a-l">Facturation de l'acte</td><td class="a-l">Rare</td><td class="a-l"><strong>Possible et justifiable</strong></td></tr></tbody></table></div>
+<p>Pour un cabinet produisant 60 documents/mois à 25 min en moyenne : <strong>~25 heures/mois libérées</strong>, soit environ <strong>0,15 ETP</strong>. Sur un portefeuille de taille intermédiaire, ce seul module peut justifier l'abonnement.</p>
+<p><strong>Pourquoi cela rend l'offre plus forte</strong></p>
+<ol start="1"><li><strong>C'est un besoin ressenti, pas un besoin théorique.</strong> Le client n'achète pas « de l'IA », il achète la fin d'une frustration qu'il vit chaque semaine.</li><li><strong>C'est démontrable en 90 secondes.</strong> Une démo qui produit une attestation réelle à partir d'un dossier réel vend seule. Aucune promesse abstraite d'automatisation ne rivalise.</li><li><strong>C'est immunisé contre la tendance T1.</strong> La normalisation e-invoicing détruit la valeur de l'OCR ; elle ne touche pas la production documentaire à la demande.</li><li><strong>C'est défendable.</strong> Reproduire cela suppose : une bibliothèque de modèles juridiquement fiable et maintenue, un mapping vers les données comptables, un moteur de validation, une chaîne de signature, un journal d'audit. Ce n'est pas un achat de logiciel — c'est un savoir-faire accumulé.</li><li><strong>Cela sert les deux acheteurs du B2B2C</strong> : le dirigeant obtient l'instantanéité, l'associé obtient du temps récupéré, de la traçabilité et un nouveau service facturable.</li><li><strong>C'est le point d'entrée idéal du produit revendu.</strong> Un cabinet peut adopter ce module seul, sans toucher à son logiciel de production — donc <strong>sans le risque P12</strong>. C'est un cheval de Troie commercial : faible friction à l'entrée, forte valeur perçue, puis extension vers les autres modules.</li></ol>
+<h3>8.2 Différenciateur n°2 (support) — La « boîte noire » : journal d'audit IA opposable</h3>
+<p>Chaque production assistée par IA conserve : la source exacte de chaque donnée, la version du modèle documentaire et du modèle d'IA utilisés, l'identité du validateur humain, l'horodatage, et l'ensemble est exportable.</p>
+<p><strong>Pourquoi c'est stratégique :</strong> c'est ce qui transforme l'IA d'un risque en un actif défendable pour un expert-comptable inscrit à l'Ordre. C'est la réponse directe à P6 et P7, aux exigences de l'AI Act (août 2026) et à la question que pose systématiquement un associé : <em>« et si l'IA se trompe ? »</em>.</p>
+<p>Ce différenciateur ne se vend pas seul, mais <strong>il débloque la vente</strong>. Sans lui, le différenciateur n°1 se heurte au refus de l'associé.</p>
+<h3>8.3 Positionnement recommandé</h3>
+<blockquote><strong>Le premier cabinet d'expertise comptable augmenté par l'IA, où chaque dirigeant dispose d'un conseiller humain identifié et d'un assistant disponible 24h/24 — et où aucune décision n'est prise sans validation humaine tracée.</strong></blockquote>
+<p>La seconde partie de la phrase est aussi importante que la première : elle transforme la contrainte déontologique en argument de confiance, sur un marché où la peur de l'IA est un frein majeur.</p>
+<hr>
+<h2 id="9-personas-cibles">9. PERSONAS CIBLES</h2>
+<h3>Persona 1 — Youns, associé fondateur (acheteur principal, objectif A)</h3>
+<div class="tw"><table><thead><tr><th class="a-l"></th><th class="a-l"></th></tr></thead><tbody><tr><td class="a-l"><strong>Rôle</strong></td><td class="a-l">Expert-comptable inscrit, dirigeant du cabinet</td></tr><tr><td class="a-l"><strong>Objectifs</strong></td><td class="a-l">Croître sans recruter, remonter la chaîne de valeur vers le conseil, créer un actif revendable</td></tr><tr><td class="a-l"><strong>Frustrations</strong></td><td class="a-l">Ses collaborateurs passent leur temps sur des tâches sans valeur ; il ne peut pas recruter ; il voit les cabinets en ligne prendre le marché du bas</td></tr><tr><td class="a-l"><strong>Craintes</strong></td><td class="a-l">Engager sa responsabilité et son inscription à l'Ordre ; investir dans un outil que ses équipes n'utiliseront pas ; dépendre d'un prestataire</td></tr><tr><td class="a-l"><strong>Critères de décision</strong></td><td class="a-l">Traçabilité, validation humaine, hébergement UE, ROI démontrable, réversibilité</td></tr><tr><td class="a-l"><strong>Ce qui le fait signer</strong></td><td class="a-l">Une démo sur ses propres dossiers, et le calcul du temps libéré sur les 20 documents qu'il a lui-même listés</td></tr></tbody></table></div>
+<h3>Persona 2 — Sofia, collaboratrice comptable (utilisatrice quotidienne — persona critique)</h3>
+<div class="tw"><table><thead><tr><th class="a-l"></th><th class="a-l"></th></tr></thead><tbody><tr><td class="a-l"><strong>Rôle</strong></td><td class="a-l">Collaboratrice, 25 à 60 dossiers</td></tr><tr><td class="a-l"><strong>Objectifs</strong></td><td class="a-l">Boucler ses dossiers, ne pas subir la clôture, faire du travail qualifié</td></tr><tr><td class="a-l"><strong>Frustrations</strong></td><td class="a-l">Interruptions téléphoniques, relances de pièces, recopie de documents</td></tr><tr><td class="a-l"><strong>Craintes</strong></td><td class="a-l"><strong>Que l'outil lui ajoute du travail de contrôle plutôt que d'en enlever ; qu'on lui annonce qu'elle est remplaçable</strong></td></tr><tr><td class="a-l"><strong>Critères d'adoption</strong></td><td class="a-l">Gain immédiat et visible, zéro double saisie, pas de nouvelle interface à surveiller en plus des autres</td></tr><tr><td class="a-l"><strong>Point d'attention produit</strong></td><td class="a-l"><strong>C'est elle qui fait échouer ou réussir le déploiement.</strong> Le discours doit être « l'IA fait la saisie, vous faites le métier », jamais « l'IA vous remplace ». Le produit doit lui livrer une file d'exceptions priorisée, pas un flux de tout à vérifier</td></tr></tbody></table></div>
+<h3>Persona 3 — Karim, dirigeant de TPE cliente (utilisateur final)</h3>
+<div class="tw"><table><thead><tr><th class="a-l"></th><th class="a-l"></th></tr></thead><tbody><tr><td class="a-l"><strong>Rôle</strong></td><td class="a-l">Gérant d'une PME de 8 personnes</td></tr><tr><td class="a-l"><strong>Objectifs</strong></td><td class="a-l">Ne pas y penser, payer le bon montant d'impôt, savoir combien il peut se verser</td></tr><tr><td class="a-l"><strong>Frustrations</strong></td><td class="a-l">Ne sait jamais quelle pièce envoyer ; attend une semaine une attestation dont sa banque a besoin sous 48 h ; ne comprend pas son bilan</td></tr><tr><td class="a-l"><strong>Craintes</strong></td><td class="a-l">Un redressement ; être « juste un dossier parmi d'autres »</td></tr><tr><td class="a-l"><strong>Critères d'usage</strong></td><td class="a-l">Zéro friction, mobile, réponse immédiate</td></tr><tr><td class="a-l"><strong>Déclencheur d'usage</strong></td><td class="a-l">La première fois qu'il obtient une attestation en 15 minutes, il devient prescripteur du cabinet</td></tr></tbody></table></div>
+<h3>Persona 4 — Nathalie, associée d'un cabinet client du produit revendu (acheteur, objectif B)</h3>
+<div class="tw"><table><thead><tr><th class="a-l"></th><th class="a-l"></th></tr></thead><tbody><tr><td class="a-l"><strong>Rôle</strong></td><td class="a-l">Associée d'un cabinet de 12 collaborateurs, 350 dossiers</td></tr><tr><td class="a-l"><strong>Objectifs</strong></td><td class="a-l">Rattraper son retard technologique sans projet informatique</td></tr><tr><td class="a-l"><strong>Frustrations</strong></td><td class="a-l">Son éditeur historique est lent et cher ; elle n'a ni DSI ni budget R&amp;D</td></tr><tr><td class="a-l"><strong>Craintes</strong></td><td class="a-l">Migration douloureuse, données exposées, outil abandonné dans 18 mois, dépendance</td></tr><tr><td class="a-l"><strong>Critères de décision</strong></td><td class="a-l"><strong>Ne pas toucher à son logiciel de production</strong>, déploiement en jours, prix lisible, sortie possible, hébergement UE</td></tr><tr><td class="a-l"><strong>Ce qui la fait signer</strong></td><td class="a-l">Le module attestations seul, sans intégration, avec un ROI calculable — puis extension progressive</td></tr></tbody></table></div>
+<h3>Persona 5 — AMRW (exploitant, persona interne)</h3>
+<div class="tw"><table><thead><tr><th class="a-l"></th><th class="a-l"></th></tr></thead><tbody><tr><td class="a-l"><strong>Rôle</strong></td><td class="a-l">Éditeur et mainteneur</td></tr><tr><td class="a-l"><strong>Objectifs</strong></td><td class="a-l">Marge récurrente, coût de support maîtrisé, personnalisation sans fork de code</td></tr><tr><td class="a-l"><strong>Craintes</strong></td><td class="a-l">Coût variable d'IA non maîtrisé, support illimité inclus dans un abonnement bas, dette technique</td></tr><tr><td class="a-l"><strong>Besoins produit</strong></td><td class="a-l">Supervision multi-cabinets, compteurs de consommation, plafonds automatiques, provisioning en libre-service</td></tr></tbody></table></div>
+<hr>
+<h2 id="10-parcours-utilisateurs">10. PARCOURS UTILISATEURS</h2>
+<h3>10.1 Parcours A — Demande d'attestation par téléphone (différenciateur n°1)</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Étape</th><th class="a-l">Acteur</th><th class="a-l">Action</th><th class="a-l">Système</th></tr></thead><tbody><tr><td class="a-l">1</td><td class="a-l">Karim</td><td class="a-l">Appelle le cabinet à 22 h 10</td><td class="a-l">Agent vocal décroche, identifie l'appelant par son numéro et confirme son identité</td></tr><tr><td class="a-l">2</td><td class="a-l">Karim</td><td class="a-l">« J'ai besoin d'une attestation de chiffre d'affaires pour ma banque »</td><td class="a-l">Qualification : exercice concerné, destinataire, format, urgence</td></tr><tr><td class="a-l">3</td><td class="a-l">Système</td><td class="a-l">—</td><td class="a-l">Vérifie la disponibilité des données (exercice clos, liasse déposée). Si indisponible : l'annonce explicitement et propose une alternative</td></tr><tr><td class="a-l">4</td><td class="a-l">Système</td><td class="a-l">—</td><td class="a-l">Génère le document pré-rempli, le place en file de validation</td></tr><tr><td class="a-l">5</td><td class="a-l">Karim</td><td class="a-l">—</td><td class="a-l">Reçoit une confirmation : « Votre attestation sera validée par votre expert-comptable et vous parviendra demain avant 10 h »</td></tr><tr><td class="a-l">6</td><td class="a-l">Youns</td><td class="a-l">9 h 05, ouvre sa file</td><td class="a-l">Voit le document, les valeurs surlignées avec leur source, valide en un clic</td></tr><tr><td class="a-l">7</td><td class="a-l">Système</td><td class="a-l">—</td><td class="a-l">Applique la signature électronique, envoie, archive, journalise, propose la facturation de l'acte</td></tr><tr><td class="a-l">8</td><td class="a-l">Karim</td><td class="a-l">9 h 12</td><td class="a-l">Reçoit son attestation signée</td></tr></tbody></table></div>
+<p><strong>Délai total : 14 heures dont 62 secondes de temps humain.</strong> Aucun collaborateur n'a été interrompu.</p>
+<h3>10.2 Parcours B — Réception d'une facture fournisseur</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Étape</th><th class="a-l">Acteur</th><th class="a-l">Action</th><th class="a-l">Système</th></tr></thead><tbody><tr><td class="a-l">1</td><td class="a-l">Karim</td><td class="a-l">Transfère la facture à son adresse dédiée</td><td class="a-l">Réception, rattachement automatique au dossier</td></tr><tr><td class="a-l">2</td><td class="a-l">Système</td><td class="a-l">—</td><td class="a-l">Extraction : fournisseur, montants HT/TVA/TTC, date, régime de TVA</td></tr><tr><td class="a-l">3</td><td class="a-l">Système</td><td class="a-l">—</td><td class="a-l">Contrôles : doublon, cohérence TVA, tiers connu, seuils</td></tr><tr><td class="a-l">4</td><td class="a-l">Système</td><td class="a-l">—</td><td class="a-l">Proposition d'écriture avec indice de confiance</td></tr><tr><td class="a-l">5</td><td class="a-l">Système</td><td class="a-l">—</td><td class="a-l"><strong>Si donnée manquante ou ambiguë</strong> (ex. immobilisation vs charge) : question ciblée envoyée à Karim sur son canal préféré</td></tr><tr><td class="a-l">6</td><td class="a-l">Sofia</td><td class="a-l">—</td><td class="a-l">Ne voit que les cas sous le seuil de confiance, dans sa file d'exceptions</td></tr><tr><td class="a-l">7</td><td class="a-l">Système</td><td class="a-l">—</td><td class="a-l">Après validation, export vers le logiciel de production ; rapprochement bancaire au moment du paiement</td></tr></tbody></table></div>
+<p><strong>Règle de conception :</strong> en dessous du seuil de confiance, rien ne part. La confiance du cabinet se perd en une seule écriture fausse passée sans contrôle.</p>
+<h3>10.3 Parcours C — Collecte de pièces avant clôture</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Étape</th><th class="a-l">Acteur</th><th class="a-l">Action</th><th class="a-l">Système</th></tr></thead><tbody><tr><td class="a-l">1</td><td class="a-l">Système</td><td class="a-l">J-45</td><td class="a-l">Analyse la complétude du dossier, identifie les manques (relevés, justificatifs de dépenses &gt; seuil, factures d'achat non rapprochées)</td></tr><tr><td class="a-l">2</td><td class="a-l">Système</td><td class="a-l">J-45</td><td class="a-l">Envoie une demande nominative et compréhensible : « Il manque 4 justificatifs. Voici lesquels : [liste avec dates et montants] »</td></tr><tr><td class="a-l">3</td><td class="a-l">Karim</td><td class="a-l">—</td><td class="a-l">Dépose depuis son mobile en photographiant</td></tr><tr><td class="a-l">4</td><td class="a-l">Système</td><td class="a-l">J-30, J-15</td><td class="a-l">Relance uniquement sur ce qui manque encore, avec escalade de ton progressive</td></tr><tr><td class="a-l">5</td><td class="a-l">Système</td><td class="a-l">J-7</td><td class="a-l">Si toujours bloqué : alerte Sofia avec le contexte complet, et non une simple notification</td></tr><tr><td class="a-l">6</td><td class="a-l">Sofia</td><td class="a-l">—</td><td class="a-l">Appelle en connaissance de cause</td></tr></tbody></table></div>
+<h3>10.4 Parcours D — Alerte proactive convertie en mission (P4)</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Étape</th><th class="a-l">Acteur</th><th class="a-l">Action</th><th class="a-l">Système</th></tr></thead><tbody><tr><td class="a-l">1</td><td class="a-l">Système</td><td class="a-l">—</td><td class="a-l">Détecte une projection de trésorerie négative à 60 jours</td></tr><tr><td class="a-l">2</td><td class="a-l">Système</td><td class="a-l">—</td><td class="a-l"><strong>Alerte le cabinet en premier, pas le client</strong> — pour que le cabinet garde la main sur le conseil</td></tr><tr><td class="a-l">3</td><td class="a-l">Sofia / Youns</td><td class="a-l">—</td><td class="a-l">Reçoit l'alerte avec l'analyse et une proposition de mission chiffrée</td></tr><tr><td class="a-l">4</td><td class="a-l">Youns</td><td class="a-l">—</td><td class="a-l">Contacte le client : <em>« j'ai regardé votre situation, on devrait en parler »</em></td></tr><tr><td class="a-l">5</td><td class="a-l">—</td><td class="a-l">—</td><td class="a-l">Le cabinet passe de réactif à proactif — et facture</td></tr></tbody></table></div>
+<p><strong>Décision de conception importante :</strong> l'alerte remonte au cabinet avant le client. Un outil qui alerterait directement le dirigeant court-circuiterait le cabinet et détruirait la valeur du conseil — donc l'argument de vente.</p>
+<h3>10.5 Parcours E — Onboarding d'un nouveau cabinet (objectif B)</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Étape</th><th class="a-l">Durée cible</th><th class="a-l">Contenu</th></tr></thead><tbody><tr><td class="a-l">1. Création du tenant</td><td class="a-l">&lt; 1 h</td><td class="a-l">Espace isolé, charte, utilisateurs</td></tr><tr><td class="a-l">2. Import du portefeuille</td><td class="a-l">&lt; 1 j</td><td class="a-l">Dossiers, tiers, contacts (fichier ou API)</td></tr><tr><td class="a-l">3. Personnalisation documentaire</td><td class="a-l">1 à 3 j</td><td class="a-l">Modèles du cabinet chargés et mappés</td></tr><tr><td class="a-l">4. Connecteur de production</td><td class="a-l"><strong>1 à 10 j — variable, poste de risque</strong></td><td class="a-l">Selon éditeur : API, ou export/import de fichiers</td></tr><tr><td class="a-l">5. Formation</td><td class="a-l">0,5 j</td><td class="a-l">Associés et collaborateurs</td></tr><tr><td class="a-l">6. Pilote</td><td class="a-l">2 à 4 semaines</td><td class="a-l">Sur un sous-ensemble de dossiers</td></tr></tbody></table></div>
+<p><strong>Le temps d'onboarding est le facteur déterminant de la rentabilité du modèle SaaS.</strong> Chaque jour d'onboarding non industrialisé consomme plusieurs mois d'abonnement.</p>
+<hr>
+<h2 id="11-fonctionnalites-du-mvp-palier-1">11. FONCTIONNALITÉS DU MVP (Palier 1)</h2>
+<p><strong>Principe directeur du MVP :</strong> ne pas essayer de tout faire. Prouver la valeur sur le différenciateur, sur un périmètre maîtrisable, avec ECACY comme client pilote et laboratoire.</p>
+<h3>11.1 Première livraison — un premier lot fonctionnel en 3 à 4 semaines</h3>
+<p><strong>Objectif : livrer vite une preuve de valeur en conditions réelles, avant d'engager le MVP complet.</strong> Le Lot 1 met en service le cœur du différenciateur — le Guichet Attestations &amp; Actes — sur un périmètre volontairement resserré, alimenté par les données réelles d'ECACY. C'est le « oui » du client qui déclenche la suite.</p>
+<div class="tw"><table><thead><tr><th class="a-l">Lot 1</th><th class="a-l">Livrable en <strong>3 à 4 semaines</strong></th></tr></thead><tbody><tr><td class="a-l"><strong>Documents couverts</strong></td><td class="a-l">3 attestations les plus demandées : attestation de chiffre d'affaires, attestation de régularité fiscale et sociale, attestation de rémunération / non-rémunération</td></tr><tr><td class="a-l"><strong>Canaux d'entrée</strong></td><td class="a-l">Demande par <strong>e-mail et WhatsApp/SMS</strong>, plus dépôt sur le portail</td></tr><tr><td class="a-l"><strong>Chaîne complète</strong></td><td class="a-l">Collecte des données du dossier (import de fichier) → génération du document conforme à la charte ECACY → <strong>file de validation de l'expert-comptable</strong> → signature électronique → délivrance au client + journal d'audit</td></tr><tr><td class="a-l"><strong>Socle</strong></td><td class="a-l">Espace sécurisé mono-cabinet (ECACY), hébergement UE, <strong>isolation des données conçue dès le départ</strong></td></tr><tr><td class="a-l"><strong>Volontairement hors Lot 1</strong></td><td class="a-l">Connecteur automatisé au logiciel de production (l'import de fichier suffit à ce stade), OCR de masse, agent vocal, tableau de bord, multi-cabinets</td></tr><tr><td class="a-l"><strong>Finalité</strong></td><td class="a-l">Démontrer le « document en 15 minutes » sur de vrais dossiers, et valider le concept avant d'engager le MVP complet</td></tr></tbody></table></div>
+<p><strong>Le Lot 1 n'est pas un prototype jetable</strong> : il constitue le socle sécurisé sur lequel le périmètre MVP complet (§11.2) vient ensuite s'étendre, sans reprise.</p>
+<h3>11.2 Périmètre fonctionnel MVP</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Module</th><th class="a-l">Contenu MVP</th><th class="a-l">Exclu du MVP</th></tr></thead><tbody><tr><td class="a-l"><strong>M1 — Socle &amp; dossiers</strong></td><td class="a-l">Authentification forte, rôles (associé, collaborateur, client), fiche dossier, tiers, contacts, périodes comptables. <strong>Isolation par cabinet conçue dès le départ</strong></td><td class="a-l">Provisioning en libre-service</td></tr><tr><td class="a-l"><strong>M2 — Portail client (web responsive / PWA)</strong></td><td class="a-l">Dépôt de pièces (photo, PDF, glisser-déposer), état de complétude, demandes de documents, messagerie, échéancier</td><td class="a-l">Applications natives iOS/Android</td></tr><tr><td class="a-l"><strong>M3 — Ingestion e-mail, WhatsApp &amp; SMS</strong></td><td class="a-l">Adresse e-mail dédiée par dossier et <strong>réception WhatsApp / SMS</strong> ; rattachement automatique au dossier, extraction des pièces jointes, classement</td><td class="a-l">Réponses conversationnelles autonomes de niveau 1 (en V2)</td></tr><tr><td class="a-l"><strong>M4 — Extraction documentaire</strong></td><td class="a-l">OCR + extraction structurée sur factures d'achat et de vente, contrôles de cohérence, détection de doublons, indice de confiance</td><td class="a-l">Rapprochement bancaire automatique complet</td></tr><tr><td class="a-l"><strong>M5 — GUICHET ATTESTATIONS &amp; ACTES</strong> <span class="star">★</span></td><td class="a-l"><strong>8 à 10 documents prioritaires</strong> de la liste ECACY : attestation fiscale, attestation URSSAF, attestation de CA, attestation de rémunération / non-rémunération, attestation de régularité fiscale et sociale, PV AGE de rémunération / non-rémunération, PV AGO, procuration ECACY, attestation de domiciliation. Moteur de modèles, mapping données, contrôles de disponibilité, file de validation, signature électronique, archivage</td><td class="a-l">Les 10+ documents restants (actes de cession, dissolution, liquidation, statuts, souscripteurs, non-condamnation…) — reportés en V2 car juridiquement plus lourds</td></tr><tr><td class="a-l"><strong>M6 — Collecte &amp; relances</strong></td><td class="a-l">Détection des pièces manquantes, relances graduées par e-mail, portail, <strong>WhatsApp et SMS</strong>, suivi de complétude, escalade collaborateur</td><td class="a-l">Relance vocale</td></tr><tr><td class="a-l"><strong>M7 — Console collaborateur</strong></td><td class="a-l">File de travail par exception, historique unifié par dossier, affectation, recherche</td><td class="a-l">SLA avancés, reporting de charge</td></tr><tr><td class="a-l"><strong>M8 — Tableau de bord dirigeant</strong></td><td class="a-l">Trésorerie, échéances fiscales, résultat estimé, indicateurs clés</td><td class="a-l">Prévisionnel et scénarios</td></tr><tr><td class="a-l"><strong>M9 — Journal d'audit</strong> <span class="star">★</span></td><td class="a-l">Traçabilité complète des actions IA et humaines, export</td><td class="a-l">Certification externe</td></tr><tr><td class="a-l"><strong>M10 — Connecteur de production</strong></td><td class="a-l"><strong>Un seul connecteur</strong>, celui d'ECACY (à identifier — Q1), avec <strong>repli obligatoire sur export/import de fichiers normalisés</strong></td><td class="a-l">Les autres éditeurs</td></tr><tr><td class="a-l"><strong>M11 — Administration cabinet</strong></td><td class="a-l">Utilisateurs, droits, modèles documentaires, paramètres, RGPD (export, suppression)</td><td class="a-l">Back-office multi-cabinets AMRW</td></tr></tbody></table></div>
+<h3>11.3 Ce qui n'est délibérément pas dans le MVP, et pourquoi</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Fonctionnalité</th><th class="a-l">Report</th><th class="a-l">Justification</th></tr></thead><tbody><tr><td class="a-l"><strong>Agent vocal IA</strong></td><td class="a-l">P2</td><td class="a-l">Coût variable non maîtrisé avant d'avoir mesuré le volume réel d'appels (Q3) ; complexité de latence et de qualité en français ; ne doit pas retarder la mise en production du différenciateur</td></tr><tr><td class="a-l"><strong>Applications mobiles natives</strong></td><td class="a-l">P2</td><td class="a-l">Une PWA couvre 90 % du besoin (dépôt de pièces par photo, consultation) sans les contraintes des stores. Le natif se justifie par les notifications push et la qualité de capture — utile, pas indispensable</td></tr><tr><td class="a-l"><strong>Réponses conversationnelles autonomes (WhatsApp / e-mail)</strong></td><td class="a-l">P2</td><td class="a-l">La <em>réception</em> WhatsApp/SMS est dans le MVP ; en revanche, laisser l'IA <em>répondre seule</em> au fond sur ces canaux exige un corpus validé et un cadrage de responsabilité — reporté en V2</td></tr><tr><td class="a-l"><strong>Rapprochement bancaire automatique</strong></td><td class="a-l">P2</td><td class="a-l">Nécessite un agrégateur bancaire (coût, DSP2, conformité). L'import de relevés couvre le MVP</td></tr><tr><td class="a-l"><strong>Multi-tenant et marque blanche complets</strong></td><td class="a-l">P3</td><td class="a-l"><strong>L'isolation des données est conçue dès le MVP</strong> ; l'industrialisation du provisioning est un projet en soi</td></tr><tr><td class="a-l"><strong>Alertes proactives</strong></td><td class="a-l">P2</td><td class="a-l">Nécessite un historique de données suffisant pour être pertinent — donc quelques mois d'usage réel</td></tr></tbody></table></div>
+<hr>
+<h2 id="12-fonctionnalites-secondaires-v2-et-v3">12. FONCTIONNALITÉS SECONDAIRES / V2 ET V3</h2>
+<h3>12.1 Palier 2 — Agent conversationnel et extension</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Réf.</th><th class="a-l">Fonctionnalité</th><th class="a-l">Priorité</th><th class="a-l">Dépendance</th></tr></thead><tbody><tr><td class="a-l">V2-1</td><td class="a-l"><strong>Agent vocal IA 24/7</strong> avec accès en lecture au dossier, déclenchement d'actions, prise de RDV, transfert qualifié, compte rendu écrit</td><td class="a-l">Haute</td><td class="a-l">Volume d'appels mesuré (Q3), plafonds de consommation</td></tr><tr><td class="a-l">V2-2</td><td class="a-l"><strong>Réponses conversationnelles autonomes</strong> (e-mail + WhatsApp) : réponse de niveau 1 sur périmètre validé</td><td class="a-l">Haute</td><td class="a-l">Corpus de FAQ du cabinet</td></tr><tr><td class="a-l">V2-3</td><td class="a-l"><strong>Bibliothèque documentaire complète</strong> : les 10+ actes restants (cession de titres, dissolution, clôture de liquidation, modification statutaire, statuts, liste des souscripteurs, liste des sièges antérieurs, attestation de non-condamnation et de filiation, déclaration de confidentialité, lettre d'option TVA mensuelle)</td><td class="a-l">Haute</td><td class="a-l">Validation juridique par un professionnel du droit</td></tr><tr><td class="a-l">V2-4</td><td class="a-l"><strong>Alertes proactives</strong> et conversion en missions de conseil</td><td class="a-l">Haute</td><td class="a-l">Historique de données</td></tr><tr><td class="a-l">V2-5</td><td class="a-l"><strong>Applications mobiles natives iOS et Android</strong></td><td class="a-l">Moyenne</td><td class="a-l">—</td></tr><tr><td class="a-l">V2-6</td><td class="a-l"><strong>Rapprochement bancaire</strong> via agrégateur</td><td class="a-l">Moyenne</td><td class="a-l">Contrat agrégateur, DSP2</td></tr><tr><td class="a-l">V2-7</td><td class="a-l"><strong>Radar de conformité e-invoicing</strong> et suivi des mandats</td><td class="a-l">Haute (calendaire)</td><td class="a-l">Choix PDP du cabinet</td></tr><tr><td class="a-l">V2-8</td><td class="a-l"><strong>Modules sectoriels</strong> (santé, e-commerce, restauration, immobilier, freelances, bâtiment) : plans comptables, règles et documents spécifiques</td><td class="a-l">Moyenne</td><td class="a-l">Choix stratégique de niche</td></tr><tr><td class="a-l">V2-9</td><td class="a-l"><strong>Mémoire de dossier enrichie</strong> : base de connaissances propre au cabinet, interrogeable</td><td class="a-l">Haute</td><td class="a-l">Gouvernance documentaire</td></tr></tbody></table></div>
+<h3>12.2 Palier 3 — Produit multi-cabinets</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Réf.</th><th class="a-l">Fonctionnalité</th><th class="a-l">Priorité</th></tr></thead><tbody><tr><td class="a-l">V3-1</td><td class="a-l">Multi-tenant industrialisé : isolation stricte, provisioning en libre-service</td><td class="a-l">Critique</td></tr><tr><td class="a-l">V3-2</td><td class="a-l">Marque blanche : logo, couleurs, domaine, modèles de documents et d'e-mails par cabinet</td><td class="a-l">Critique</td></tr><tr><td class="a-l">V3-3</td><td class="a-l">Back-office AMRW : supervision, incidents, consommation IA par cabinet, plafonds</td><td class="a-l">Critique</td></tr><tr><td class="a-l">V3-4</td><td class="a-l">Facturation des abonnements, gestion des paliers, compteurs et dépassements</td><td class="a-l">Critique</td></tr><tr><td class="a-l">V3-5</td><td class="a-l">Bibliothèque de connecteurs multi-éditeurs</td><td class="a-l">Critique</td></tr><tr><td class="a-l">V3-6</td><td class="a-l">Console de personnalisation sans code (règles, modèles, workflows) — <strong>condition de la marge d'AMRW</strong></td><td class="a-l">Critique</td></tr><tr><td class="a-l">V3-7</td><td class="a-l">Espace de support et documentation client</td><td class="a-l">Haute</td></tr><tr><td class="a-l">V3-8</td><td class="a-l">Programme partenaire / revendeur</td><td class="a-l">Moyenne</td></tr></tbody></table></div>
+<hr>
+<h2 id="13-exigences-techniques-web-et-mobile">13. EXIGENCES TECHNIQUES WEB ET MOBILE</h2>
+<h3>13.1 Architecture cible</h3>
+<pre class="ascii">┌───────────────────────────────────────────────────────────────┐
+│  CANAUX                                                       │
+│  Portail web (PWA) · E-mail · WhatsApp / SMS ·                │
+│  Apps natives (V2) · Téléphonie / agent vocal (V2)            │
+└───────────────────────┬───────────────────────────────────────┘
+                        ▼
+┌───────────────────────────────────────────────────────────────┐
+│  COUCHE ORCHESTRATION                                          │
+│  Routage des demandes · Classification d'intention ·           │
+│  Machine à états des workflows · File de validation humaine    │
+│  ⚠ Aucune action engageante sans validation humaine            │
+└───────────────────────┬───────────────────────────────────────┘
+                        ▼
+┌──────────────────┬──────────────────┬─────────────────────────┐
+│  MOTEUR IA       │  MOTEUR DOC.     │  MOTEUR RÈGLES          │
+│  Extraction      │  Modèles         │  Contrôles TVA          │
+│  Classification  │  Mapping données │  Complétude             │
+│  Conversation    │  Rendu PDF/DOCX  │  Seuils &amp; anomalies     │
+│  (RAG sur        │  E-signature     │  Échéances              │
+│   dossier)       │                  │                         │
+└──────────────────┴──────────────────┴─────────────────────────┘
+                        ▼
+┌───────────────────────────────────────────────────────────────┐
+│  DONNÉES — isolation stricte par cabinet (tenant)              │
+│  Dossiers · Tiers · Pièces · Écritures · Conversations ·       │
+│  Documents produits · JOURNAL D'AUDIT (immuable)               │
+└───────────────────────┬───────────────────────────────────────┘
+                        ▼
+┌───────────────────────────────────────────────────────────────┐
+│  CONNECTEURS                                                   │
+│  Logiciels de production · Banque (V2) · PDP (V2) ·            │
+│  Signature électronique · Téléphonie (V2)                      │
+│  ⚠ Repli fichier obligatoire sur chaque connecteur             │
+└───────────────────────────────────────────────────────────────┘</pre>
+<h3>13.2 Stack recommandée</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Couche</th><th class="a-l">Recommandation</th><th class="a-l">Justification</th></tr></thead><tbody><tr><td class="a-l"><strong>Front web</strong></td><td class="a-l">React ou Next.js, TypeScript, design system dédié</td><td class="a-l">Écosystème, recrutabilité, PWA native</td></tr><tr><td class="a-l"><strong>Mobile (V2)</strong></td><td class="a-l">React Native ou Flutter</td><td class="a-l">Base de code partagée iOS/Android, économie de 35 à 45 % vs natif</td></tr><tr><td class="a-l"><strong>Backend</strong></td><td class="a-l">Node.js/TypeScript ou Python, API REST documentée</td><td class="a-l">Cohérence avec le front ; Python si le traitement documentaire est lourd</td></tr><tr><td class="a-l"><strong>Base de données</strong></td><td class="a-l">PostgreSQL avec <strong>isolation par tenant</strong> (schéma dédié ou RLS strict)</td><td class="a-l">Le choix d'isolation est <strong>structurant et irréversible</strong> : à trancher au cadrage, pas en cours de route</td></tr><tr><td class="a-l"><strong>Stockage</strong></td><td class="a-l">Objet chiffré, hébergement UE, versionné</td><td class="a-l">Conservation 10 ans, valeur probante</td></tr><tr><td class="a-l"><strong>Files &amp; jobs</strong></td><td class="a-l">File de messages managée</td><td class="a-l">Traitements asynchrones (OCR, IA, envois)</td></tr><tr><td class="a-l"><strong>IA — LLM</strong></td><td class="a-l">Modèle via API avec <strong>DPA, hébergement/traitement UE et engagement contractuel de non-entraînement</strong></td><td class="a-l"><strong>Condition déontologique non négociable</strong> (P6)</td></tr><tr><td class="a-l"><strong>IA — extraction</strong></td><td class="a-l">Moteur OCR/extraction spécialisé + post-traitement par règles</td><td class="a-l">Ne jamais reposer sur le seul LLM pour des montants</td></tr><tr><td class="a-l"><strong>Voix (V2)</strong></td><td class="a-l">Plateforme d'agent vocal (Retell, Vapi, ElevenLabs Agents ou équivalent) + opérateur téléphonique</td><td class="a-l">Coût constaté 0,07 à 0,42 $/min tout compris selon la configuration</td></tr><tr><td class="a-l"><strong>Signature électronique</strong></td><td class="a-l">Prestataire eIDAS (niveau avancé minimum)</td><td class="a-l">Valeur juridique des documents produits</td></tr><tr><td class="a-l"><strong>Hébergement</strong></td><td class="a-l">Cloud <strong>souverain ou UE</strong> (OVHcloud, Scaleway, ou région UE d'un hyperscaler avec garanties contractuelles)</td><td class="a-l">Secret professionnel, RGPD, argument commercial</td></tr><tr><td class="a-l"><strong>Observabilité</strong></td><td class="a-l">Logs centralisés, traces, alerting, <strong>suivi de coût IA par cabinet et par dossier</strong></td><td class="a-l">Le suivi de coût IA est une exigence produit, pas une option</td></tr><tr><td class="a-l"><strong>CI/CD</strong></td><td class="a-l">Pipeline automatisé, environnements séparés, revue de code obligatoire</td><td class="a-l">Encadrement du développement assisté par IA, revue systématique</td></tr></tbody></table></div>
+<h3>13.3 Contraintes web</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Exigence</th><th class="a-l">Cible</th></tr></thead><tbody><tr><td class="a-l">Responsive</td><td class="a-l">Mobile, tablette, desktop — le dirigeant dépose ses pièces au téléphone</td></tr><tr><td class="a-l">PWA</td><td class="a-l">Installable, capture photo, fonctionnement dégradé hors ligne pour le dépôt</td></tr><tr><td class="a-l">Performance</td><td class="a-l">LCP &lt; 2,5 s, interface réactive sur mobile 4G</td></tr><tr><td class="a-l">Accessibilité</td><td class="a-l">RGAA / WCAG 2.1 AA visé</td></tr><tr><td class="a-l">Navigateurs</td><td class="a-l">2 dernières versions des navigateurs majeurs</td></tr><tr><td class="a-l">Upload</td><td class="a-l">Fichiers volumineux, multi-fichiers, reprise sur coupure, formats PDF/JPG/PNG/HEIC</td></tr><tr><td class="a-l">Sécurité front</td><td class="a-l">CSP stricte, protection XSS/CSRF, pas de secret côté client</td></tr></tbody></table></div>
+<h3>13.4 Contraintes mobiles iOS / Android (V2)</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Exigence</th><th class="a-l">Détail</th></tr></thead><tbody><tr><td class="a-l">Versions cibles</td><td class="a-l">iOS 16+, Android 10+</td></tr><tr><td class="a-l">Capture</td><td class="a-l">Appareil photo avec détection de bords, correction, multi-pages</td></tr><tr><td class="a-l">Notifications push</td><td class="a-l">Demande de pièce, document prêt, message du cabinet</td></tr><tr><td class="a-l">Biométrie</td><td class="a-l">Face ID / empreinte pour l'accès</td></tr><tr><td class="a-l">Hors ligne</td><td class="a-l">File d'envoi différé des pièces</td></tr><tr><td class="a-l">Publication</td><td class="a-l">Comptes développeur Apple (99 $/an) et Google (25 $ unique) <strong>au nom du client</strong></td></tr><tr><td class="a-l"><strong>Validation App Store</strong></td><td class="a-l"><strong>Poste de risque calendaire</strong> : prévoir 2 à 3 itérations de revue Apple. Une app « portail client » sans valeur propre peut être refusée au titre du guideline 4.2 (minimum functionality) — la capture photo et les notifications doivent être mises en avant</td></tr><tr><td class="a-l">Marque blanche mobile (P3)</td><td class="a-l"><strong>Alerte majeure</strong> : publier une app par cabinet est ingérable. Recommandation : <strong>une seule app multi-cabinets</strong> où le cabinet est sélectionné à la connexion, avec thème dynamique</td></tr><tr><td class="a-l">RGPD mobile</td><td class="a-l">Déclaration de confidentialité des stores, pas de traceur tiers sans consentement</td></tr></tbody></table></div>
+<hr>
+<h2 id="14-contraintes-securite-conformite-et-maintenance">14. CONTRAINTES SÉCURITÉ, CONFORMITÉ ET MAINTENANCE</h2>
+<h3>14.1 Sécurité</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Domaine</th><th class="a-l">Exigence</th><th class="a-l">Priorité</th></tr></thead><tbody><tr><td class="a-l">Authentification</td><td class="a-l">MFA obligatoire pour collaborateurs et associés, politique de mot de passe, gestion de session</td><td class="a-l">Critique</td></tr><tr><td class="a-l">Autorisation</td><td class="a-l">Contrôle d'accès par rôle <strong>et par dossier</strong> ; un collaborateur ne voit que son portefeuille</td><td class="a-l">Critique</td></tr><tr><td class="a-l"><strong>Isolation multi-tenant</strong></td><td class="a-l"><strong>Aucune fuite de donnée possible entre cabinets. Tests d'isolation automatisés obligatoires dans la CI</strong></td><td class="a-l"><strong>Critique</strong></td></tr><tr><td class="a-l">Chiffrement</td><td class="a-l">TLS 1.3 en transit, chiffrement au repos (base et stockage objet)</td><td class="a-l">Critique</td></tr><tr><td class="a-l">Secrets</td><td class="a-l">Coffre à secrets, rotation, zéro secret en dépôt de code</td><td class="a-l">Critique</td></tr><tr><td class="a-l">Journalisation</td><td class="a-l">Journal d'accès et d'action immuable, horodaté, exportable</td><td class="a-l">Critique</td></tr><tr><td class="a-l">Sauvegardes</td><td class="a-l">Quotidiennes, chiffrées, <strong>restauration testée trimestriellement</strong></td><td class="a-l">Critique</td></tr><tr><td class="a-l">PRA/PCA</td><td class="a-l">RPO ≤ 24 h, RTO ≤ 8 h (à valider avec le client)</td><td class="a-l">Haute</td></tr><tr><td class="a-l">Tests de sécurité</td><td class="a-l">Analyse de dépendances en continu, <strong>test d'intrusion avant mise en production</strong> et avant l'ouverture multi-cabinets</td><td class="a-l">Haute</td></tr><tr><td class="a-l">Anti-abus</td><td class="a-l">Limitation de débit, plafonds de consommation IA par cabinet, détection d'anomalie de volume</td><td class="a-l">Haute</td></tr></tbody></table></div>
+<h3>14.2 Conformité RGPD</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Exigence</th><th class="a-l">Mise en œuvre</th></tr></thead><tbody><tr><td class="a-l">Base légale</td><td class="a-l">Exécution du contrat (mission comptable) ; intérêt légitime pour les traitements d'amélioration, à documenter</td></tr><tr><td class="a-l">Rôles</td><td class="a-l"><strong>À trancher explicitement au contrat.</strong> Cabinet = responsable de traitement ; AMRW = sous-traitant ; fournisseurs IA = sous-traitants ultérieurs</td></tr><tr><td class="a-l">DPA</td><td class="a-l">Contrat de sous-traitance AMRW ↔ cabinet, <strong>et</strong> chaîne complète vers les fournisseurs IA, avec autorisation de sous-traitance ultérieure</td></tr><tr><td class="a-l">Localisation</td><td class="a-l"><strong>Hébergement et traitement IA dans l'UE.</strong> Tout transfert hors UE doit être identifié, justifié et encadré</td></tr><tr><td class="a-l">Non-entraînement</td><td class="a-l"><strong>Engagement contractuel écrit de non-utilisation des données pour l'entraînement de modèles</strong> — condition de conformité au secret professionnel</td></tr><tr><td class="a-l">Droits des personnes</td><td class="a-l">Accès, rectification, effacement, portabilité : outillés dans l'administration cabinet</td></tr><tr><td class="a-l">Durées de conservation</td><td class="a-l">Politique par catégorie ; <strong>articulation avec l'obligation de conservation comptable de 10 ans</strong></td></tr><tr><td class="a-l">Registre</td><td class="a-l">Modèle de registre fourni au cabinet</td></tr><tr><td class="a-l">Violation de données</td><td class="a-l">Procédure de notification sous 72 h, documentée et testée</td></tr><tr><td class="a-l">Minimisation</td><td class="a-l">Ne pas envoyer plus de contexte que nécessaire aux modèles d'IA ; pseudonymisation quand c'est possible</td></tr></tbody></table></div>
+<h3>14.3 Conformité déontologique et sectorielle</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Exigence</th><th class="a-l">Mise en œuvre</th></tr></thead><tbody><tr><td class="a-l"><strong>Secret professionnel</strong> (décret n° 2012-432)</td><td class="a-l">Cloisonnement, chaîne de sous-traitance maîtrisée, aucun usage d'IA grand public sur données identifiantes</td></tr><tr><td class="a-l"><strong>Responsabilité de l'expert-comptable</strong></td><td class="a-l"><strong>Validation humaine nominative obligatoire</strong> sur tout document sortant et toute écriture. Aucune signature automatique. Cette règle est architecturale, pas paramétrable</td></tr><tr><td class="a-l"><strong>AI Act</strong> (application août 2026)</td><td class="a-l">Information de l'utilisateur qu'il interagit avec une IA (notamment sur le canal vocal), documentation du système, journal d'audit, supervision humaine</td></tr><tr><td class="a-l"><strong>Sous-traitance de production (niveau 2 du modèle client)</strong></td><td class="a-l"><strong>Point d'alerte majeur</strong> : si une équipe externalisée accède aux dossiers, elle doit être contractuellement encadrée (secret professionnel, DPA, localisation). <strong>Si elle est hors UE, le sujet devient bloquant et doit être arbitré avant conception</strong></td></tr><tr><td class="a-l"><strong>Facturation électronique</strong></td><td class="a-l">Le produit s'articule avec une PDP, ne s'y substitue pas</td></tr><tr><td class="a-l"><strong>LCB-FT</strong></td><td class="a-l">Ne pas automatiser les diligences de vigilance</td></tr></tbody></table></div>
+<h3>14.4 Maintenance et exploitation</h3>
+<div class="tw"><table><thead><tr><th class="a-l">Domaine</th><th class="a-l">Exigence</th></tr></thead><tbody><tr><td class="a-l">Supervision</td><td class="a-l">Disponibilité, latence, taux d'erreur, files bloquées, <strong>coût IA par cabinet</strong></td></tr><tr><td class="a-l">Support</td><td class="a-l">Niveaux et délais à contractualiser — <strong>poste de coût le plus sous-estimé du modèle SaaS</strong></td></tr><tr><td class="a-l">Mises à jour</td><td class="a-l">Déploiement continu, versionnage, notes de version, fenêtres de maintenance</td></tr><tr><td class="a-l"><strong>Versionnage des modèles documentaires</strong></td><td class="a-l"><strong>Un document produit doit rester reproductible à l'identique 10 ans plus tard.</strong> Les modèles sont versionnés et jamais écrasés</td></tr><tr><td class="a-l"><strong>Veille juridique</strong></td><td class="a-l">Les modèles d'attestations et d'actes doivent suivre les évolutions légales — <strong>prestation récurrente à identifier et à facturer, ou à exclure explicitement du contrat</strong></td></tr><tr><td class="a-l">Réversibilité</td><td class="a-l">Export complet des données et documents dans un format ouvert, garanti contractuellement</td></tr><tr><td class="a-l">Dette technique</td><td class="a-l">Budget de refactorisation planifié dès le chiffrage</td></tr></tbody></table></div>
+<hr>
+<h2 id="15-recommandations-produit-et-business">15. RECOMMANDATIONS PRODUIT ET BUSINESS</h2>
+<h3>15.1 Recommandations produit</h3>
+<p><strong>R1 — Ancrer le produit sur le Guichet Attestations &amp; Actes, pas sur l'automatisation comptable.</strong></p>
+<p>C'est le seul terrain où le produit est seul, démontrable, immunisé contre la normalisation e-invoicing, et vendable sans toucher au logiciel de production du cabinet. L'automatisation comptable est un terrain occupé par des acteurs valorisés en milliards.</p>
+<p><strong>R2 — Faire de la validation humaine une caractéristique produit, pas une limitation.</strong></p>
+<p>« Rien ne sort du cabinet sans qu'un expert-comptable ait cliqué. » C'est un argument de vente sur un marché où l'associé a peur de l'IA.</p>
+<p><strong>R3 — Différer l'agent vocal après le MVP.</strong></p>
+<p>Il est spectaculaire en démo mais c'est le poste au coût variable le plus incertain et à la complexité d'exécution la plus élevée. Le lancer sans avoir mesuré le volume d'appels réel (Q3) expose à une dérive de coûts sur un abonnement forfaitaire.</p>
+<p><strong>R4 — Concevoir l'isolation multi-tenant dès le MVP, facturer le multi-tenant en P3.</strong></p>
+<p>Rétrofiter l'isolation sur un produit mono-cabinet coûte plus cher que de la concevoir d'emblée, et fait porter un risque de fuite de données inacceptable.</p>
+<p><strong>R5 — Sur chaque connecteur, prévoir un repli fichier.</strong></p>
+<p>C'est la seule protection contre le risque P12. Un connecteur API qui casse ne doit pas immobiliser le cabinet.</p>
+<p><strong>R6 — Traiter la collaboratrice (persona 2) comme l'utilisatrice critique.</strong></p>
+<p>Le produit échoue si les équipes ne l'adoptent pas. Concevoir une file d'exceptions priorisée, pas un flux de contrôle systématique.</p>
+<p><strong>R7 — Faire remonter les alertes proactives au cabinet avant le client.</strong></p>
+<p>Préserve la valeur du conseil, donc l'argument de vente auprès des cabinets.</p>
+<p><strong>R8 — Poser un seuil de confiance strict et visible sur l'extraction.</strong></p>
+<p>Une écriture fausse passée sans contrôle détruit plus de confiance que dix automatisations réussies n'en construisent.</p>
+<h3>15.2 Recommandations business</h3>
+<p><strong>R9 — Séquencer strictement : ECACY d'abord, produit ensuite.</strong></p>
+<p>Construire un produit multi-cabinets sans avoir prouvé la valeur sur un cabinet réel, c'est construire pour des besoins supposés. ECACY doit être le client pilote sur 3 à 6 mois avant toute commercialisation externe.</p>
+<p><strong>R10 — Revoir le modèle économique à 190 €/mois.</strong></p>
+<p>Le prix envisagé n'est pas soutenable comme forfait illimité. Estimation du coût variable mensuel, par cabinet, pour un cabinet moyen (150 dossiers actifs, 8 collaborateurs) :</p>
+<div class="tw"><table><thead><tr><th class="a-l">Poste de coût variable</th><th class="a-l">Volume mensuel estimé</th><th class="a-r">Coût mensuel</th></tr></thead><tbody><tr><td class="a-l">Extraction documentaire</td><td class="a-l">4 500 pièces</td><td class="a-r">45 à 135 €</td></tr><tr><td class="a-l">Modèles de langage (classification, conversation, génération)</td><td class="a-l">~20 000 requêtes</td><td class="a-r">60 à 180 €</td></tr><tr><td class="a-l">Agent vocal, si inclus en illimité</td><td class="a-l">400 appels × 3 min</td><td class="a-r">90 à 200 €</td></tr><tr><td class="a-l">Signature électronique</td><td class="a-l">60 documents</td><td class="a-r">30 à 120 €</td></tr><tr><td class="a-l">Stockage, archivage 10 ans, infrastructure</td><td class="a-l">—</td><td class="a-r">25 à 75 €</td></tr><tr><td class="a-l"><strong>Total coût variable</strong></td><td class="a-l"></td><td class="a-r"><strong>250 à 710 €/mois</strong></td></tr></tbody></table></div>
+<p>À 190 €/mois tout compris, la marge est négative dans tous les scénarios incluant la voix et la signature électronique — avant même tout coût de support, d'onboarding et de maintenance.</p>
+<p><strong>Structure tarifaire recommandée</strong></p>
+<div class="tw"><table><thead><tr><th class="a-l">Composant</th><th class="a-l">Prix recommandé</th></tr></thead><tbody><tr><td class="a-l">Socle plateforme, par cabinet</td><td class="a-l">190 à 290 €/mois HT — le repère de 190 € devient le point d'entrée</td></tr><tr><td class="a-l">Par dossier actif</td><td class="a-l">1,50 à 3 €/dossier/mois</td></tr><tr><td class="a-l">Guichet attestations</td><td class="a-l">Quota inclus (ex. 20 documents/mois), puis 2 à 5 €/document, refacturable par le cabinet à son client</td></tr><tr><td class="a-l">Agent vocal</td><td class="a-l">En option : forfait de minutes puis à la minute — isole le poste au coût le plus volatil</td></tr><tr><td class="a-l">Signature électronique</td><td class="a-l">Refacturée au coût + marge</td></tr><tr><td class="a-l">Setup et onboarding</td><td class="a-l">1 500 à 4 000 € HT une fois</td></tr><tr><td class="a-l">Personnalisation</td><td class="a-l">En régie</td></tr></tbody></table></div>
+<p><strong>Revenu récurrent réaliste : 450 à 900 €/mois HT par cabinet</strong> selon sa taille — soit 2,5 à 5 fois le prix envisagé, et toujours très inférieur au coût d'un collaborateur (35 000 à 45 000 € chargés/an) qu'il est de toute façon impossible de recruter dans le contexte actuel.</p>
+<p>Le problème du prix de 190 €/mois n'est pas qu'il soit trop élevé pour le marché : c'est qu'il <strong>sous-vend la valeur</strong> et rend le produit non finançable.</p>
+<p><strong>R11 — Clarifier la propriété intellectuelle et le modèle de partenariat avant de développer.</strong></p>
+<p>Trois montages possibles, à trancher (Q8) :</p>
+<div class="tw"><table><thead><tr><th class="a-l">Montage</th><th class="a-l">Description</th><th class="a-l">Pour AMRW</th></tr></thead><tbody><tr><td class="a-l"><strong>Prestation</strong></td><td class="a-l">ECACY paie le développement, détient le produit, AMRW facture la maintenance</td><td class="a-l">Revenu immédiat, pas de récurrent significatif</td></tr><tr><td class="a-l"><strong>Co-édition</strong></td><td class="a-l">Investissement partagé, PI partagée, partage des revenus SaaS</td><td class="a-l">Récurrent, mais capital immobilisé</td></tr><tr><td class="a-l"><strong>Éditeur AMRW</strong></td><td class="a-l">AMRW détient le produit, ECACY est client pilote privilégié (tarif préférentiel, exclusivité temporaire sur Paris)</td><td class="a-l"><strong>Recommandé</strong> : AMRW capitalise sur un actif réutilisable, ECACY obtient son outil à coût réduit</td></tr></tbody></table></div>
+<p><strong>R12 — Positionner l'offre commerciale d'ECACY en premium assumé.</strong></p>
+<p>Le plancher du marché en ligne est à 39-49 €/mois. ECACY ne peut pas y aller. Structure d'offre proposée (transposant celle du client) :</p>
+<div class="tw"><table><thead><tr><th class="a-l">Offre</th><th class="a-l">Contenu</th><th class="a-l">Positionnement</th></tr></thead><tbody><tr><td class="a-l"><strong>Essentiel</strong></td><td class="a-l">Tenue + portail + collecte automatisée</td><td class="a-l">Entrée, aligné marché</td></tr><tr><td class="a-l"><strong>Digital</strong></td><td class="a-l">+ Guichet attestations + tableau de bord dirigeant</td><td class="a-l"><strong>Cœur de cible — le différenciateur est ici</strong></td></tr><tr><td class="a-l"><strong>Premium</strong></td><td class="a-l">+ Assistant 24/7 + interlocuteur dédié + alertes proactives + conseil</td><td class="a-l">Haut de gamme, marge maximale</td></tr></tbody></table></div>
+<p><strong>R13 — Utiliser l'échéance du 1er septembre 2026 comme accélérateur commercial.</strong></p>
+<p>Elle est dans 5 semaines. C'est un déclencheur d'attention immédiat auprès des cabinets, même si le module e-invoicing n'est prêt qu'en V2 — le discours peut être « nous vous préparons à l'après ».</p>
+<p><strong>R14 — Choisir une niche sectorielle pour la V2.</strong></p>
+<p>La spécialisation (santé, e-commerce, immobilier…) justifie le premium et réduit le coût de personnalisation. Un choix vaut mieux que six options.</p>
+<hr>
+<h2 id="16-risques-angles-morts-et-points-a-valider">16. RISQUES, ANGLES MORTS ET POINTS À VALIDER</h2>
+<h3>16.1 Registre des risques</h3>
+<div class="tw"><table><thead><tr><th class="a-l">#</th><th class="a-l">Risque</th><th class="a-l">Prob.</th><th class="a-l">Impact</th><th class="a-l">Criticité</th><th class="a-l">Mitigation</th></tr></thead><tbody><tr><td class="a-l"><strong>R-01</strong></td><td class="a-l"><strong>Absence ou fermeture d'API du logiciel de production</strong></td><td class="a-l"><strong>Élevée</strong></td><td class="a-l"><strong>Élevé</strong></td><td class="a-l"><span class="dot dot-r"></span> <strong>Critique</strong></td><td class="a-l">Qualifier avant le devis ferme (Q1) ; repli fichier systématique ; ne prendre aucun engagement de résultat sur l'intégration</td></tr><tr><td class="a-l"><strong>R-02</strong></td><td class="a-l"><strong>Économie unitaire négative à 190 €/mois</strong></td><td class="a-l"><strong>Élevée</strong></td><td class="a-l"><strong>Élevé</strong></td><td class="a-l"><span class="dot dot-r"></span> <strong>Critique</strong></td><td class="a-l">Refonte du modèle tarifaire (voir §15.2) ; compteurs et plafonds dans le produit dès la conception</td></tr><tr><td class="a-l"><strong>R-03</strong></td><td class="a-l"><strong>Fuite de données entre cabinets (multi-tenant)</strong></td><td class="a-l">Moyenne</td><td class="a-l"><strong>Très élevé</strong></td><td class="a-l"><span class="dot dot-r"></span> <strong>Critique</strong></td><td class="a-l">Isolation conçue dès le MVP ; tests d'isolation automatisés en CI ; test d'intrusion avant ouverture multi-cabinets</td></tr><tr><td class="a-l"><strong>R-04</strong></td><td class="a-l">Document erroné produit et signé sur données incorrectes</td><td class="a-l">Moyenne</td><td class="a-l"><strong>Très élevé</strong></td><td class="a-l"><span class="dot dot-r"></span> <strong>Critique</strong></td><td class="a-l">Validation humaine obligatoire ; contrôles de disponibilité bloquants ; affichage des sources ; journal d'audit</td></tr><tr><td class="a-l"><strong>R-05</strong></td><td class="a-l">Non-adoption par les collaborateurs</td><td class="a-l"><strong>Élevée</strong></td><td class="a-l">Élevé</td><td class="a-l"><span class="dot dot-o"></span> Fort</td><td class="a-l">Persona 2 au centre de la conception ; pilote accompagné ; discours « l'IA fait la saisie »</td></tr><tr><td class="a-l"><strong>R-06</strong></td><td class="a-l">Dérive de périmètre entre objectif A (cabinet) et objectif B (produit)</td><td class="a-l"><strong>Très élevée</strong></td><td class="a-l">Élevé</td><td class="a-l"><span class="dot dot-o"></span> Fort</td><td class="a-l">Paliers contractualisés séparément ; procédure d'avenant formalisée</td></tr><tr><td class="a-l"><strong>R-07</strong></td><td class="a-l">Dette technique issue d'un vibe coding non encadré</td><td class="a-l">Élevée</td><td class="a-l">Élevé</td><td class="a-l"><span class="dot dot-o"></span> Fort</td><td class="a-l">Budget de reprise et de sécurisation explicite au chiffrage ; revue de code obligatoire ; tests sur le cœur métier</td></tr><tr><td class="a-l"><strong>R-08</strong></td><td class="a-l">Modèles juridiques non conformes ou obsolètes</td><td class="a-l">Moyenne</td><td class="a-l">Élevé</td><td class="a-l"><span class="dot dot-o"></span> Fort</td><td class="a-l"><strong>Validation initiale par un professionnel du droit</strong> ; versionnage ; contrat de veille juridique ou exclusion explicite</td></tr><tr><td class="a-l"><strong>R-09</strong></td><td class="a-l">Coût de support et d'onboarding supérieur au revenu récurrent</td><td class="a-l">Élevée</td><td class="a-l">Moyen</td><td class="a-l"><span class="dot dot-o"></span> Fort</td><td class="a-l">Industrialiser l'onboarding ; facturer le setup ; contractualiser les niveaux de support</td></tr><tr><td class="a-l"><strong>R-10</strong></td><td class="a-l">Refus ou retard de publication sur l'App Store</td><td class="a-l">Moyenne</td><td class="a-l">Moyen</td><td class="a-l"><span class="dot dot-y"></span> Modéré</td><td class="a-l">PWA en MVP ; mise en avant des fonctions natives ; marge calendaire de 2 à 3 semaines</td></tr><tr><td class="a-l"><strong>R-11</strong></td><td class="a-l">Qualité insuffisante de l'agent vocal en français (latence, compréhension d'accents, bruit)</td><td class="a-l">Moyenne</td><td class="a-l">Moyen</td><td class="a-l"><span class="dot dot-y"></span> Modéré</td><td class="a-l">Prototype de validation avant engagement ; transfert humain systématique en cas d'échec</td></tr><tr><td class="a-l"><strong>R-12</strong></td><td class="a-l">Sous-traitance de production hors UE</td><td class="a-l">Moyenne</td><td class="a-l"><strong>Élevé</strong></td><td class="a-l"><span class="dot dot-o"></span> Fort</td><td class="a-l">Arbitrer avec le client avant conception (Q10) ; encadrement contractuel strict ou renoncement</td></tr><tr><td class="a-l"><strong>R-13</strong></td><td class="a-l">Dépendance à un fournisseur de LLM (prix, disponibilité, conditions)</td><td class="a-l">Moyenne</td><td class="a-l">Moyen</td><td class="a-l"><span class="dot dot-y"></span> Modéré</td><td class="a-l">Couche d'abstraction des appels IA ; ne pas coupler le code métier à un fournisseur</td></tr><tr><td class="a-l"><strong>R-14</strong></td><td class="a-l">Concurrence : une plateforme majeure lance le même module</td><td class="a-l">Moyenne</td><td class="a-l">Élevé</td><td class="a-l"><span class="dot dot-o"></span> Fort</td><td class="a-l">Vitesse d'exécution ; profondeur de la bibliothèque documentaire ; ancrage sur les process des cabinets</td></tr><tr><td class="a-l"><strong>R-15</strong></td><td class="a-l">Indisponibilité du client pour les validations et arbitrages</td><td class="a-l">Élevée</td><td class="a-l">Moyen</td><td class="a-l"><span class="dot dot-o"></span> Fort</td><td class="a-l">Comité de pilotage hebdomadaire contractualisé ; délai de validation par défaut</td></tr></tbody></table></div>
+<h3>16.2 Angles morts identifiés</h3>
+<div class="tw"><table><thead><tr><th class="a-l">#</th><th class="a-l">Angle mort</th><th class="a-l">Conséquence si non traité</th></tr></thead><tbody><tr><td class="a-l">A1</td><td class="a-l"><strong>Qui maintient juridiquement les modèles de documents ?</strong> Le droit des sociétés évolue. Un PV d'AGE obsolète engage le cabinet</td><td class="a-l">Responsabilité non couverte, litige potentiel</td></tr><tr><td class="a-l">A2</td><td class="a-l"><strong>Le versionnage des documents produits.</strong> Un document doit être reproductible à l'identique dans 10 ans</td><td class="a-l">Impossibilité de justifier une production en cas de contrôle</td></tr><tr><td class="a-l">A3</td><td class="a-l"><strong>Le coût de sortie et la réversibilité.</strong> Un cabinet ne signera pas sans garantie d'export</td><td class="a-l">Blocage commercial en fin de cycle de vente</td></tr><tr><td class="a-l">A4</td><td class="a-l"><strong>La migration des données historiques</strong> lors de l'onboarding d'un cabinet</td><td class="a-l">Onboarding beaucoup plus long que prévu, marge détruite</td></tr><tr><td class="a-l">A5</td><td class="a-l"><strong>La gestion des périodes de pointe</strong> (clôtures de mai, TVA) : la charge n'est pas linéaire</td><td class="a-l">Dimensionnement d'infrastructure et de support sous-évalué</td></tr><tr><td class="a-l">A6</td><td class="a-l"><strong>La formation et la conduite du changement</strong> ne sont pas du développement</td><td class="a-l">Poste souvent absent des devis, puis subi</td></tr><tr><td class="a-l">A7</td><td class="a-l"><strong>La responsabilité en cas de dommage causé par une erreur IA</strong> — assurance RC pro d'AMRW couvre-t-elle l'édition logicielle ?</td><td class="a-l">Exposition non assurée</td></tr><tr><td class="a-l">A8</td><td class="a-l"><strong>Le cas du client qui refuse l'IA.</strong> Certains dirigeants exigeront un humain</td><td class="a-l">Prévoir un mode dégradé purement humain, sinon perte de clients</td></tr><tr><td class="a-l">A9</td><td class="a-l"><strong>Les dossiers en cours d'exercice non clos.</strong> Une attestation de CA sur exercice non clos n'a pas la même valeur</td><td class="a-l">Production de documents juridiquement fragiles</td></tr><tr><td class="a-l">A10</td><td class="a-l"><strong>La marque blanche mobile</strong> : une app par cabinet est ingérable sur les stores</td><td class="a-l">Impasse technique découverte tard</td></tr></tbody></table></div>
+<h3>16.3 Points à valider avant chiffrage ferme</h3>
+<p>Les 10 questions du §2.4 (Q1 à Q10) sont bloquantes. Les plus urgentes :</p>
+<ol start="1"><li><strong>Q1 — Logiciel de production d'ECACY</strong> → conditionne le risque R-01 et le chiffrage du connecteur.</li><li><strong>Q2/Q3/Q4 — Volumes</strong> (dossiers, appels, e-mails, documents) → conditionnent le dimensionnement, le ROI et le modèle tarifaire.</li><li><strong>Q8 — Montage PI et partenariat</strong> → conditionne la structure commerciale de l'offre AMRW.</li><li><strong>Q10 — Localisation de la production externalisée</strong> → potentiellement bloquant sur le plan RGPD.</li></ol>
+<hr>
+<hr>
+<hr>
+<h2 id="annexe-sources">ANNEXE — SOURCES</h2>
+<p><strong>Client</strong></p>
+<ul><li>Site ECACY : https://ecacy.com/</li><li>Document client « BESOINS POUR CABINET ECACY (YOUNS).docx »</li><li>Document client « Tâches répétitives ECACY.docx »</li></ul>
+<p><strong>Marché, secteur et réglementation</strong></p>
+<ul><li><a href="https://les-experts-comptables.fr/ressources/nombre-experts-comptables-france/" target="_blank" rel="noopener">Chiffres de l'expertise comptable en France 2026 — Les Experts Comptables</a></li><li><a href="https://tool-advisor.fr/blog/chiffres-expertise-comptable/" target="_blank" rel="noopener">Marché de l'expertise-comptable : 12 chiffres à connaître en 2026 — Tool Advisor</a></li><li><a href="https://lessentieldeleco.fr/2627-cabinets-comptables-la-grande-panne-de-recrutement/" target="_blank" rel="noopener">Cabinets comptables : la grande panne de recrutement — L'Essentiel de l'Éco</a></li><li><a href="https://financepeople.fr/penurie-de-comptables-en-2026-webinar/" target="_blank" rel="noopener">Pénurie de comptables en 2026 — Finance People</a></li><li><a href="https://www.escg-rennes.fr/marche-emploi-comptable-bretagne-rennes-2026/" target="_blank" rel="noopener">Marché de l'emploi comptable 2026 — ESCG Rennes</a></li><li><a href="https://www.experts-comptables.fr/comprendre-la-facturation-electronique" target="_blank" rel="noopener">Comprendre la facturation électronique — Ordre des experts-comptables</a></li><li><a href="https://www.compta-online.com/facturation-electronique-ao5562" target="_blank" rel="noopener">Facturation électronique : cap sur le 1er septembre 2026 confirmé — Compta Online</a></li><li><a href="https://www.kanta.fr/articles/e-invoicing-tout-ce-que-les-experts-comptables-doivent-savoir-pour-2026" target="_blank" rel="noopener">E-invoicing : guide complet pour experts-comptables 2026 — Kanta</a></li><li><a href="https://www.compta-online.com/ia-secret-professionnel-expert-comptable-ao8755" target="_blank" rel="noopener">IA et secret professionnel de l'expert-comptable — Compta Online</a></li><li><a href="https://les-experts-comptables.fr/ressources/expert-comptable-ia" target="_blank" rel="noopener">Expert-comptable et IA en 2026 : ce qui change — Les Experts Comptables</a></li><li><a href="https://www.francenum.gouv.fr/guides-et-conseils/intelligence-artificielle/comprendre-et-adopter-lia/ia-generative-pour-les" target="_blank" rel="noopener">IA générative pour les cabinets d'expertise comptable — France Num</a></li></ul>
+<p><strong>Benchmark logiciels et cabinets</strong></p>
+<ul><li><a href="https://www.daf-mag.fr/fonction-finance-1242/gouvernance-strategie-2125/les-benchmarks-daf-2026-les-solutions-dia-et-dautomatisation-comptable-25339" target="_blank" rel="noopener">Les benchmarks DAF 2026 : solutions d'IA et d'automatisation comptable — DAF Mag</a></li><li><a href="https://www.daf-mag.fr/bi-1244/outils-si-2132/top-5-des-outils-dia-et-dautomatisation-comptable-en-2026-25889" target="_blank" rel="noopener">Top 5 des outils d'IA et d'automatisation comptable en 2026 — DAF Mag</a></li><li><a href="https://finthesis.io/blog/logiciel-pour-cabinet-expertise-comptable" target="_blank" rel="noopener">Quel logiciel pour un cabinet d'expertise comptable en 2026 — Finthesis</a></li><li><a href="https://earn.fr/pennylane-vs-inqom/" target="_blank" rel="noopener">Pennylane vs Inqom 2026 — EARN</a></li><li><a href="https://cecca.fr/blog/expertise-comptable/tarifs-pennylane/" target="_blank" rel="noopener">Tarifs Pennylane 2026 — Cecca</a></li><li><a href="https://tool-advisor.fr/expert-comptable-en-ligne/comparatif/" target="_blank" rel="noopener">Comparatif experts-comptables en ligne 2026 — Tool Advisor</a></li><li><a href="https://tool-advisor.fr/expert-comptable-en-ligne/comparatif/prix-expert-comptable-en-ligne/" target="_blank" rel="noopener">Tarifs d'un expert-comptable en ligne en 2026 — Tool Advisor</a></li><li><a href="https://sortir-du-lot.com/dougs-vs-keobiz-quel-expert-comptable-en-ligne-en-2026/" target="_blank" rel="noopener">Dougs vs Keobiz : quel expert-comptable en ligne en 2026 — Sortir du Lot</a></li><li><a href="https://impalact.fr/la-solution-impalact/" target="_blank" rel="noopener">ImpalAct — logiciel de secrétariat juridique</a></li><li><a href="https://www.clementine.fr/solutions/juridique/" target="_blank" rel="noopener">Clémentine — solutions juridiques</a></li><li><a href="https://www.callandco.fr/accueil-telephonique-expert-comptable/" target="_blank" rel="noopener">Accueil téléphonique pour cabinet d'expertise comptable — Call and Co</a></li><li><a href="https://nerolia-ai.fr/blog/standard-telephonique-ia-automatiser-accueil-entreprise" target="_blank" rel="noopener">Standard téléphonique IA : guide, comparatif et prix 2026 — Nerolia</a></li></ul>
+<p><strong>Coûts des technologies d'IA</strong></p>
+<ul><li><a href="https://caller.digital/voice-ai-pricing-comparison" target="_blank" rel="noopener">AI Voice Agent Pricing Per Minute 2026 — Caller Digital</a></li><li><a href="https://trtc.io/blog/details/voice-ai-pricing-compared-2026" target="_blank" rel="noopener">Voice AI Pricing 2026 : ElevenLabs vs Vapi vs GoHighLevel — TRTC</a></li></ul>
+<hr>
+<p><em>Document rédigé par l'Agence AMRW — 24 juillet 2026. Ce cahier des charges est un document de cadrage : les arbitrages de périmètre, de calendrier et de budget sont conditionnés à la levée des points Q1 à Q10 (§2.4 et §16.3).</em></p>
+        <hr>
+        <p style="font-family:var(--sans);font-size:12px;color:var(--muted)"><em>Document rédigé par l'Agence AMRW — 24 juillet 2026. Document de cadrage : les arbitrages de périmètre, de calendrier et de budget sont conditionnés à la levée des points Q1 à Q10.</em></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<footer>ECACY × Agence AMRW — Vue d'ensemble interactive du projet · 2026</footer>
+
+<script>
+(function(){
+  "use strict";
+  var root=document.documentElement;
+
+  /* theme */
+  var tb=document.getElementById('theme');
+  tb.addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme');
+    if(!cur){cur=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}
+    root.setAttribute('data-theme',cur==='dark'?'light':'dark');
+    requestAnimationFrame(draw);
+  });
+
+  /* tabs */
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  function show(id,keep){
+    if(id!=='arch'&&id!=='doc') id='arch';
+    tabs.forEach(function(t){t.setAttribute('aria-selected', t.dataset.tab===id);});
+    document.getElementById('p-arch').classList.toggle('active', id==='arch');
+    document.getElementById('p-doc').classList.toggle('active', id==='doc');
+    if(id==='arch'){ requestAnimationFrame(function(){requestAnimationFrame(draw);}); }
+    if(!keep){ try{history.replaceState(null,'',id==='doc'?'#doc':'#');}catch(e){} window.scrollTo(0,0); }
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(t.dataset.tab);});});
+  if((location.hash||'').indexOf('doc')>-1){ show('doc',true); }
+  /* optional ?theme=light|dark for deep links / verification */
+  var qt=(location.search.match(/theme=(light|dark)/)||[])[1];
+  if(qt){ root.setAttribute('data-theme',qt); }
+
+  /* ---- edges ---- */
+  var stage=document.getElementById('stage'), svg=document.getElementById('edges');
+  var EDGES=[
+    ['dir','portail','both'],['dir','email','both'],['dir','tel','both'],['dir','wa','both'],
+    ['portail','routage','both'],['email','routage','both'],['tel','routage','both'],['wa','routage','both'],
+    ['routage','workflow','to'],['workflow','valid','to'],
+    ['workflow','mia','both'],['workflow','mdoc','both'],['workflow','mreg','both'],
+    ['mia','base','both'],['mdoc','base','both'],['mreg','base','both'],
+    ['base','audit','to'],
+    ['base','prod','both'],['base','banque','both'],['base','pdp','both']
+  ];
+  function el(id){return stage.querySelector('[data-id="'+id+'"]');}
+  var neigh={}, edgeEls=[];
+  EDGES.forEach(function(e){
+    (neigh[e[0]]=neigh[e[0]]||[]).push(e[1]);
+    (neigh[e[1]]=neigh[e[1]]||[]).push(e[0]);
+  });
+
+  function build(){
+    edgeEls.forEach(function(p){p.remove();});
+    edgeEls=[];
+    EDGES.forEach(function(e){
+      var p=document.createElementNS('http://www.w3.org/2000/svg','path');
+      p.setAttribute('class','edge'+(e[2]==='to'&&(e[0]==='routage'||e[0]==='workflow'||e[0]==='base')?' dash':''));
+      p.setAttribute('marker-end','url(#ah)');
+      if(e[2]==='both') p.setAttribute('marker-start','url(#ah)');
+      p.dataset.a=e[0]; p.dataset.b=e[1];
+      svg.appendChild(p); edgeEls.push(p);
+    });
+  }
+  function draw(){
+    if(!stage.offsetWidth) return;
+    var s=stage.getBoundingClientRect();
+    svg.setAttribute('width',stage.scrollWidth);
+    svg.setAttribute('height',stage.scrollHeight);
+    edgeEls.forEach(function(p){
+      var a=el(p.dataset.a), b=el(p.dataset.b); if(!a||!b) return;
+      var ra=a.getBoundingClientRect(), rb=b.getBoundingClientRect();
+      var acx=ra.left+ra.width/2-s.left, acy=ra.top+ra.height/2-s.top;
+      var bcx=rb.left+rb.width/2-s.left, bcy=rb.top+rb.height/2-s.top;
+      var dx=bcx-acx, dy=bcy-acy, x1,y1,x2,y2,c1x,c1y,c2x,c2y;
+      if(Math.abs(dx)>=Math.abs(dy)){ /* horizontal */
+        if(dx>=0){x1=ra.right-s.left;y1=acy;x2=rb.left-s.left;y2=bcy;}
+        else{x1=ra.left-s.left;y1=acy;x2=rb.right-s.left;y2=bcy;}
+        var off=Math.max(28,Math.abs(x2-x1)*0.45);
+        c1x=x1+(x2>x1?off:-off);c1y=y1; c2x=x2+(x2>x1?-off:off);c2y=y2;
+      }else{ /* vertical */
+        if(dy>=0){x1=acx;y1=ra.bottom-s.top;x2=bcx;y2=rb.top-s.top;}
+        else{x1=acx;y1=ra.top-s.top;x2=bcx;y2=rb.bottom-s.top;}
+        var offv=Math.max(20,Math.abs(y2-y1)*0.5);
+        c1x=x1;c1y=y1+(y2>y1?offv:-offv); c2x=x2;c2y=y2+(y2>y1?-offv:offv);
+      }
+      p.setAttribute('d','M'+x1+','+y1+' C'+c1x+','+c1y+' '+c2x+','+c2y+' '+x2+','+y2);
+    });
+  }
+
+  /* hover highlight */
+  function hot(id,on){
+    var set={}; set[id]=1; (neigh[id]||[]).forEach(function(x){set[x]=1;});
+    stage.classList.toggle('dim',on);
+    stage.querySelectorAll('.node').forEach(function(nd){
+      nd.classList.toggle('hot', on && !!set[nd.dataset.id]);
+    });
+    edgeEls.forEach(function(p){
+      p.classList.toggle('hot', on && (p.dataset.a===id||p.dataset.b===id));
+    });
+  }
+  stage.querySelectorAll('.node').forEach(function(nd){
+    nd.addEventListener('mouseenter',function(){hot(nd.dataset.id,true);});
+    nd.addEventListener('mouseleave',function(){hot(nd.dataset.id,false);});
+  });
+
+  build();
+  function reveal(){
+    var nodes=stage.querySelectorAll('.node');
+    nodes.forEach(function(nd,i){ nd.style.transitionDelay=(i*45)+'ms'; });
+    stage.classList.add('ready');
+    setTimeout(function(){nodes.forEach(function(nd){nd.style.transitionDelay='';});},1400);
+  }
+  window.addEventListener('load',function(){draw();reveal();});
+  window.addEventListener('resize',draw);
+  if(window.ResizeObserver){ new ResizeObserver(draw).observe(stage); }
+  setTimeout(draw,80); setTimeout(function(){draw();reveal();},220);
+
+  /* TOC scroll-spy */
+  var links=[].slice.call(document.querySelectorAll('#toc a'));
+  var map={}; links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var heads=[].slice.call(document.querySelectorAll('.article h2'));
+  links.forEach(function(a){a.addEventListener('click',function(){
+    setTimeout(function(){links.forEach(function(x){x.classList.remove('on');});a.classList.add('on');},10);
+  });});
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(en){
+      if(en.isIntersecting){
+        links.forEach(function(x){x.classList.remove('on');});
+        var a=map[en.target.id]; if(a){a.classList.add('on');
+          a.scrollIntoView({block:'nearest'});}
+      }
+    });
+  },{rootMargin:'-70px 0px -75% 0px',threshold:0});
+  heads.forEach(function(h){io.observe(h);});
+})();
+</script>
+
+</body>
+</html>
